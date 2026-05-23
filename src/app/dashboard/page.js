@@ -6,6 +6,7 @@ import { useApp, getWeekStartDate } from '@/lib/context';
 import { supabase } from '@/lib/supabase';
 import confetti from 'canvas-confetti';
 import { SpendingChart, TaskPieChart } from '@/components/Charts';
+import Dock from '@/components/Dock/Dock';
 import { 
   Sparkles, 
   CheckCircle, 
@@ -17,9 +18,13 @@ import {
   ArrowRight,
   TrendingDown,
   Info,
-  TasksIcon,
   ChevronRight,
-  CalendarDays
+  CalendarDays,
+  LayoutDashboard,
+  Wallet,
+  BarChart3,
+  History,
+  Settings
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -40,6 +45,17 @@ export default function Dashboard() {
 
   const [aiSnippet, setAiSnippet] = useState(null);
   const [loadingAi, setLoadingAi] = useState(true);
+
+  const dockItems = [
+    { icon: <LayoutDashboard size={18} />, label: 'Dashboard', onClick: () => router.push('/dashboard') },
+    { icon: <Calendar size={18} />, label: 'Tasks Planner', onClick: () => router.push('/tasks') },
+    { icon: <Wallet size={18} />, label: 'Expense Log', onClick: () => router.push('/expenses') },
+    { icon: <TrendingUp size={18} />, label: 'Weekly Budget', onClick: () => router.push('/budget') },
+    { icon: <BarChart3 size={18} />, label: 'Monthly Hub', onClick: () => router.push('/monthly') },
+    { icon: <Sparkles size={18} />, label: 'AI Review', onClick: () => router.push('/ai-review') },
+    { icon: <History size={18} />, label: 'History Log', onClick: () => router.push('/history') },
+    { icon: <Settings size={18} />, label: 'Settings', onClick: () => router.push('/settings') },
+  ];
 
   // Redirect if not logged in
   useEffect(() => {
@@ -355,6 +371,11 @@ export default function Dashboard() {
           </div>
         </div>
 
+      </div>
+
+      {/* Floating Navigation Dock */}
+      <div className="pb-16 md:pb-0">
+        <Dock items={dockItems} panelHeight={68} baseItemSize={50} magnification={70} />
       </div>
     </div>
   );

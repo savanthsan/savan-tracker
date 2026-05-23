@@ -151,7 +151,7 @@ export function AppProvider({ children }) {
         setUser(session.user);
         await fetchProfile(session.user.id);
         if (typeof document !== 'undefined') {
-          document.cookie = `savan-session=${session.access_token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax; Secure`;
+          document.cookie = `savan-session=${session.access_token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
         }
       } else {
         setUser(null);
@@ -160,7 +160,7 @@ export function AppProvider({ children }) {
         setExpenses([]);
         setWeeklyBudget(null);
         if (typeof document !== 'undefined') {
-          document.cookie = `savan-session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax; Secure`;
+          document.cookie = `savan-session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax`;
         }
       }
       setLoading(false);

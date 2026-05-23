@@ -42,7 +42,7 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     await signOut();
-    router.push('/');
+    window.location.href = '/';
   };
 
   const getInitials = () => {

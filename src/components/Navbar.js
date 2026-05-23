@@ -13,7 +13,9 @@ import {
   LogOut, 
   Menu, 
   X,
-  User
+  User,
+  History,
+  BarChart3
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -32,7 +34,9 @@ export default function Navbar() {
     { name: 'Tasks', href: '/tasks', icon: CalendarRange },
     { name: 'Expenses', href: '/expenses', icon: Wallet },
     { name: 'Weekly Budget', href: '/budget', icon: TrendingUp },
+    { name: 'Monthly Hub', href: '/monthly', icon: BarChart3 },
     { name: 'AI Review', href: '/ai-review', icon: Sparkles, highlight: true },
+    { name: 'History Log', href: '/history', icon: History },
     { name: 'Settings', href: '/settings', icon: Settings },
   ];
 

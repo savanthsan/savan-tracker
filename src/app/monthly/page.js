@@ -96,6 +96,12 @@ export default function MonthlyHub() {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (!fetchingDB && !monthlyReview && user && !loading) {
+      generateMonthlyAIReview();
+    }
+  }, [fetchingDB, monthlyReview, user, loading]);
+
   // Filter tasks & expenses for current month
   const currentMonthTasks = tasks.filter(t => t.task_date.startsWith(monthPrefix));
   const currentMonthExpenses = expenses.filter(e => e.expense_date.startsWith(monthPrefix));
@@ -209,7 +215,7 @@ export default function MonthlyHub() {
             Monthly Analytics Hub
           </h1>
           <p className="text-sm text-slate-400 mt-1.5">
-            Overview of spending thresholds, task outputs, and Gemini reviews for <span className="text-indigo-400 font-semibold">{monthName}</span>.
+            Overview of spending thresholds, task outputs, and AI advisor reviews for <span className="text-indigo-400 font-semibold">{monthName}</span>.
           </p>
         </div>
 

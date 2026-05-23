@@ -270,7 +270,7 @@ export default function Settings() {
 
             <div className="space-y-4 text-xs text-slate-400 leading-relaxed">
               <p>
-                Savan connects with <span className="font-semibold text-slate-200">Supabase</span> for database storage and secure session tokens, and maps planner details using <span className="font-semibold text-slate-200">Google Gemini AI Studio API</span> keys.
+                Savan connects with <span className="font-semibold text-slate-200">Supabase</span> for database storage and secure session tokens, and maps planner details using <span className="font-semibold text-slate-200">AI Coach API</span> keys.
               </p>
               
               <div className="p-4 bg-indigo-500/5 border border-indigo-500/10 rounded-xl space-y-2">

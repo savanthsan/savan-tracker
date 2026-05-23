@@ -60,6 +60,12 @@ export default function AIReview() {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (!fetchingDB && !review && user && !loading) {
+      generateAIReview();
+    }
+  }, [fetchingDB, review, user, loading]);
+
   const generateAIReview = async () => {
     setLoadingReview(true);
     try {

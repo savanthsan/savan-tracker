@@ -17,7 +17,7 @@ const inter = Inter({
 
 export const metadata = {
   title: "Savan - AI Planner & Expense Tracker",
-  description: "Gain complete clarity over your tasks and finances with Savan, a beautiful visual planner and intelligent budget advisor powered by Gemini AI.",
+  description: "Gain complete clarity over your tasks and finances with Savan, a beautiful visual planner and intelligent budget advisor powered by Savan AI.",
 };
 
 export default function RootLayout({ children }) {

@@ -34,7 +34,7 @@ export default function Home() {
     },
     {
       icon: Sparkles,
-      title: "Gemini AI Audits",
+      title: "Intelligent AI Audits",
       description: "Get weekly reviews combining your task completion rates and spending habits. Receive honest advice to improve your life.",
       color: "from-purple-500/20 to-pink-500/20",
       iconColor: "text-purple-400"
@@ -96,7 +96,7 @@ export default function Home() {
       <main className="max-w-5xl mx-auto w-full text-center mt-20 mb-16 z-10 flex flex-col items-center">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6 backdrop-blur-md">
           <Sparkles size={16} className="text-emerald-400 pulse-glow" />
-          <span className="text-xs font-semibold text-slate-300">Powered by Google Gemini 2.5 Flash</span>
+          <span className="text-xs font-semibold text-slate-300">Powered by Savan Intelligent AI</span>
         </div>
         
         <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white mb-6 leading-tight max-w-4xl">
@@ -178,7 +178,7 @@ export default function Home() {
           </div>
           <div className="flex items-center gap-2">
             <Award size={18} className="text-purple-500/80" />
-            <span>Gemini AI Insights</span>
+            <span>Intelligent AI Insights</span>
           </div>
         </div>
       </main>

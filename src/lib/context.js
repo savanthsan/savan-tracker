@@ -150,12 +150,18 @@ export function AppProvider({ children }) {
       if (session?.user) {
         setUser(session.user);
         await fetchProfile(session.user.id);
+        if (typeof document !== 'undefined') {
+          document.cookie = `savan-session=${session.access_token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax; Secure`;
+        }
       } else {
         setUser(null);
         setProfile(null);
         setTasks([]);
         setExpenses([]);
         setWeeklyBudget(null);
+        if (typeof document !== 'undefined') {
+          document.cookie = `savan-session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax; Secure`;
+        }
       }
       setLoading(false);
     });

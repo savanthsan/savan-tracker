@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useApp } from '@/lib/context';
 import { supabase } from '@/lib/supabase';
 import confetti from 'canvas-confetti';
+import { playSuccessChime } from '@/lib/audio';
 import { 
   Calendar, 
   Clock, 
@@ -128,6 +129,7 @@ export default function Tasks() {
 
       if (updatedStatus) {
         // Success completion celebration confetti
+        playSuccessChime();
         confetti({
           particleCount: 100,
           spread: 60,

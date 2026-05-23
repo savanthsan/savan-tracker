@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabase';
 import confetti from 'canvas-confetti';
 import { SpendingChart, TaskPieChart } from '@/components/Charts';
 import Dock from '@/components/Dock/Dock';
+import { playSuccessChime } from '@/lib/audio';
 import { 
   Sparkles, 
   CheckCircle, 
@@ -139,6 +140,7 @@ export default function Dashboard() {
       if (error) throw error;
 
       // Celebrate
+      playSuccessChime();
       confetti({
         particleCount: 80,
         spread: 50,

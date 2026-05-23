@@ -20,7 +20,8 @@ import {
   ArrowRight,
   TrendingDown,
   Info,
-  CalendarRange
+  CalendarRange,
+  Download
 } from 'lucide-react';
 
 export default function HistoryLog() {
@@ -157,6 +158,50 @@ export default function HistoryLog() {
     }
   };
 
+  const handleExportCSV = () => {
+    if (expenses.length === 0 && tasks.length === 0) {
+      alert('No data available to export.');
+      return;
+    }
+
+    const headers = ['Type', 'Title/Category', 'Description/Note', 'Date', 'Time/Amount', 'Priority/Status'];
+    const rows = [
+      ...tasks.map(t => [
+        'Task',
+        t.title,
+        t.description || '',
+        t.task_date,
+        t.task_time || '',
+        t.is_completed ? 'Completed' : 'Pending'
+      ]),
+      ...expenses.map(e => [
+        'Expense',
+        e.category,
+        e.note || '',
+        e.expense_date,
+        `${currency}${e.amount}`,
+        ''
+      ])
+    ];
+
+    const csvRows = [
+      headers.join(','),
+      ...rows.map(row => 
+        row.map(value => `"${value.toString().replace(/"/g, '""')}"`).join(',')
+      )
+    ];
+
+    // Prepend UTF-8 BOM for Microsoft Excel compliance with currency symbols
+    const csvContent = "data:text/csv;charset=utf-8,\uFEFF" + csvRows.join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `savan_historical_export_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (loading || !user) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
@@ -169,16 +214,27 @@ export default function HistoryLog() {
   return (
     <div className="space-y-8 pb-10">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
-          Historical Logs & Archives
-          <span className="inline-flex ml-2.5 items-center justify-center px-2 py-0.5 text-xs font-semibold bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-full">
-            History
-          </span>
-        </h1>
-        <p className="text-sm text-slate-400 mt-1.5">
-          Chronological database of all planned events, categorized spending transactions, and smart AI coach audits.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent flex flex-wrap items-center gap-2">
+            Historical Logs & Archives
+            <span className="inline-flex items-center justify-center px-2 py-0.5 text-xs font-semibold bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-full">
+              History
+            </span>
+          </h1>
+          <p className="text-sm text-slate-400 mt-1.5">
+            Chronological database of all planned events, categorized spending transactions, and smart AI coach audits.
+          </p>
+        </div>
+
+        {/* CSV Export Button */}
+        <button
+          onClick={handleExportCSV}
+          className="glow-btn flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition-all shadow-[0_0_20px_rgba(99,102,241,0.2)] cursor-pointer shrink-0"
+        >
+          <Download size={14} />
+          <span>Export Data to CSV</span>
+        </button>
       </div>
 
       {/* Tabs Menu */}

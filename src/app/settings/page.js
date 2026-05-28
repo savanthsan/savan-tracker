@@ -63,15 +63,15 @@ export default function Settings() {
     try {
       const { data, error } = await supabase.auth.updateUser({
         data: { 
-          full_name: fullName.trim(),
-          username: username.trim()
+          full_name: (fullName || '').trim(),
+          username: (username || '').trim()
         }
       });
 
       if (error) throw error;
 
-      // Force session refresh to get new metadata
-      await supabase.auth.refreshSession();
+      // Force session refresh to get new metadata (non-blocking)
+      supabase.auth.refreshSession().catch(e => console.error('Session refresh error:', e));
       
       addNotification('Profile updated successfully!', 'success');
     } catch (err) {

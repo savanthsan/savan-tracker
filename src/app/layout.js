@@ -1,22 +1,22 @@
-import { Outfit, Inter } from "next/font/google";
+import { Delius_Swash_Caps, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/lib/context";
 import Navbar from "@/components/Navbar";
 import NotificationHandler from "@/components/NotificationHandler";
 
-const outfit = Outfit({
-  variable: "--font-outfit",
+const delius = Delius_Swash_Caps({
+  variable: "--font-delius",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["400"],
 });
 
-const inter = Inter({
-  variable: "--font-sans",
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-mono",
   subsets: ["latin"],
 });
 
 export const metadata = {
-  title: "Savan - AI Planner & Expense Tracker",
+  title: "Savan - AI Planner & Expense Tracker (Doodle)",
   description: "Gain complete clarity over your tasks and finances with Savan, a beautiful visual planner and intelligent budget advisor powered by Savan AI.",
 };
 
@@ -24,9 +24,9 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${outfit.variable} ${inter.variable} h-full antialiased`}
+      className={`${delius.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground">
+      <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
         <AppProvider>
           <NotificationHandler />
           <div className="flex flex-col md:flex-row min-h-screen">
@@ -42,3 +42,5 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
+
+

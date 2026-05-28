@@ -191,8 +191,21 @@ export function AppProvider({ children }) {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    try {
+      if (typeof document !== 'undefined') {
+        document.cookie = 'savan-session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax';
+      }
+      setUser(null);
+      setProfile(null);
+      setTasks([]);
+      setExpenses([]);
+      setWeeklyBudget(null);
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.error('Error signing out of Supabase:', err);
+    }
   };
+
 
   return (
     <AppContext.Provider

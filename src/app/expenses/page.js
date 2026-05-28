@@ -47,13 +47,13 @@ export default function Expenses() {
   }, []);
 
   const categories = [
-    { id: 'food', name: 'Food & Drinks', color: 'bg-orange-500/20 text-orange-400 border-orange-500/30', fill: '#f97316' },
-    { id: 'travel', name: 'Travel & Transport', color: 'bg-blue-500/20 text-blue-400 border-blue-500/30', fill: '#3b82f6' },
-    { id: 'shopping', name: 'Shopping', color: 'bg-pink-500/20 text-pink-400 border-pink-500/30', fill: '#ec4899' },
-    { id: 'study', name: 'Study & Books', color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30', fill: '#10b981' },
-    { id: 'bills', name: 'Bills & Utilities', color: 'bg-red-500/20 text-red-400 border-red-500/30', fill: '#ef4444' },
-    { id: 'entertainment', name: 'Entertainment', color: 'bg-purple-500/20 text-purple-400 border-purple-500/30', fill: '#a855f7' },
-    { id: 'other', name: 'Other', color: 'bg-slate-500/20 text-slate-400 border-slate-500/30', fill: '#64748b' }
+    { id: 'food', name: 'Food & Drinks', color: 'bg-orange-105 text-orange-700 border-orange-350', fill: '#f97316' },
+    { id: 'travel', name: 'Travel & Transport', color: 'bg-blue-105 text-blue-800 border-blue-350', fill: '#3b82f6' },
+    { id: 'shopping', name: 'Shopping', color: 'bg-pink-105 text-pink-750 border-pink-350', fill: '#ec4899' },
+    { id: 'study', name: 'Study & Books', color: 'bg-emerald-105 text-emerald-705 border-emerald-350', fill: '#16a34a' },
+    { id: 'bills', name: 'Bills & Utilities', color: 'bg-red-105 text-danger border-red-350', fill: '#dc2626' },
+    { id: 'entertainment', name: 'Entertainment', color: 'bg-purple-105 text-purple-750 border-purple-350', fill: '#8b5cf6' },
+    { id: 'other', name: 'Other', color: 'bg-slate-105 text-slate-700 border-slate-350', fill: '#4b5563' }
   ];
 
   // Helper: Find category metadata
@@ -174,8 +174,8 @@ export default function Expenses() {
   if (loading || !user) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-        <p className="text-slate-400 text-sm">Loading financial balances...</p>
+        <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <p className="text-slate-700 text-sm font-mono">Loading financial balances...</p>
       </div>
     );
   }
@@ -185,16 +185,16 @@ export default function Expenses() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-secondary tracking-tight font-sans">
             Expense Tracker
           </h1>
-          <p className="text-sm text-slate-400 mt-1.5">
+          <p className="text-sm text-slate-655 mt-1.5 font-mono">
             Log your daily spending, audit weekly budgets, and view category analytics.
           </p>
         </div>
         <Link 
           href="/budget"
-          className="w-fit flex items-center gap-2 py-2 px-4 bg-indigo-600/10 border border-indigo-500/20 hover:bg-indigo-600/20 text-indigo-300 rounded-xl text-xs font-bold transition-all"
+          className="doodle-btn py-2.5 px-4 text-xs font-bold transition-all shadow-[2px_3px_0px_#263D5B] flex items-center gap-2 cursor-pointer"
         >
           <span>Manage Weekly Budget</span>
           <LinkIcon size={12} />
@@ -204,70 +204,70 @@ export default function Expenses() {
       {/* Grid: Financial Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Weekly Budget */}
-        <div className="glass-card p-6 border border-white/5 bg-slate-900/40 backdrop-blur-md rounded-2xl flex flex-col justify-between">
-          <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Weekly Budget</div>
+        <div className="bg-white border-2 border-secondary p-6 rounded-[20px_10px_220px_12px/14px_200px_12px_250px] shadow-[3px_4px_0px_#263D5B] hover:shadow-[5px_6px_0px_#263D5B] hover:-translate-y-0.5 transition-all flex flex-col justify-between">
+          <div className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">Weekly Budget</div>
           <div className="mt-2.5 flex items-baseline gap-1">
-            <span className="text-3xl font-extrabold text-white">
+            <span className="text-3xl font-extrabold text-secondary font-sans">
               {currency}{budgetAmount.toFixed(2)}
             </span>
-            <span className="text-slate-500 text-xs">/ week</span>
+            <span className="text-slate-500 text-xs font-mono">/ week</span>
           </div>
-          <div className="mt-4 text-xs text-slate-400">
+          <div className="mt-4 text-xs text-slate-600 font-mono">
             {weeklyBudget ? (
-              <span>Active starting: <span className="text-slate-300 font-semibold">{weeklyBudget.week_start_date}</span></span>
+              <span>Active starting: <span className="text-slate-900 font-bold">{weeklyBudget.week_start_date}</span></span>
             ) : (
-              <span className="text-amber-400/80 font-medium">No budget set for this week.</span>
+              <span className="text-warning font-bold">No budget set for this week.</span>
             )}
           </div>
         </div>
 
         {/* Total Spent */}
-        <div className="glass-card p-6 border border-white/5 bg-slate-900/40 backdrop-blur-md rounded-2xl flex flex-col justify-between">
-          <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Spent This Week</div>
+        <div className="bg-white border-2 border-secondary p-6 rounded-[20px_10px_220px_12px/14px_200px_12px_250px] shadow-[3px_4px_0px_#263D5B] hover:shadow-[5px_6px_0px_#263D5B] hover:-translate-y-0.5 transition-all flex flex-col justify-between">
+          <div className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">Spent This Week</div>
           <div className="mt-2.5">
-            <span className="text-3xl font-extrabold text-white">
+            <span className="text-3xl font-extrabold text-secondary font-sans">
               {currency}{totalSpentThisWeek.toFixed(2)}
             </span>
           </div>
           {budgetAmount > 0 ? (
             <div className="mt-4">
-              <div className="flex justify-between text-[10px] font-semibold text-slate-400 mb-1">
+              <div className="flex justify-between text-[10px] font-bold text-slate-600 mb-1 font-mono">
                 <span>Budget Progress</span>
-                <span className={budgetPercentage > 100 ? 'text-red-400 font-bold' : 'text-slate-300'}>
+                <span className={budgetPercentage > 100 ? 'text-danger font-bold' : 'text-slate-900'}>
                   {budgetPercentage.toFixed(0)}%
                 </span>
               </div>
-              <div className="w-full h-1.5 bg-slate-950/80 rounded-full overflow-hidden">
+              <div className="w-full h-2.5 bg-slate-50 border-2 border-secondary rounded-full overflow-hidden">
                 <div 
                   className={`h-full rounded-full transition-all duration-500 ${
-                    budgetPercentage > 100 ? 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]' :
-                    budgetPercentage > 85 ? 'bg-amber-500' : 'bg-indigo-500'
+                    budgetPercentage > 100 ? 'bg-danger' :
+                    budgetPercentage > 85 ? 'bg-warning' : 'bg-primary'
                   }`}
                   style={{ width: `${Math.min(budgetPercentage, 100)}%` }}
                 />
               </div>
             </div>
           ) : (
-            <div className="mt-4 text-xs text-slate-500">
+            <div className="mt-4 text-xs text-slate-500 font-mono">
               Set a budget to monitor your percentage progress.
             </div>
           )}
         </div>
 
         {/* Remaining Money */}
-        <div className="glass-card p-6 border border-white/5 bg-slate-900/40 backdrop-blur-md rounded-2xl flex flex-col justify-between">
-          <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Remaining Balance</div>
+        <div className="bg-white border-2 border-secondary p-6 rounded-[20px_10px_220px_12px/14px_200px_12px_250px] shadow-[3px_4px_0px_#263D5B] hover:shadow-[5px_6px_0px_#263D5B] hover:-translate-y-0.5 transition-all flex flex-col justify-between">
+          <div className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">Remaining Balance</div>
           <div className="mt-2.5 flex items-center gap-2">
-            <span className={`text-3xl font-extrabold ${remainingBudget < 0 ? 'text-red-400 text-neon-red' : 'text-emerald-400 text-neon-emerald'}`}>
+            <span className={`text-3xl font-extrabold font-sans ${remainingBudget < 0 ? 'text-danger' : 'text-success'}`}>
               {currency}{remainingBudget.toFixed(2)}
             </span>
             {remainingBudget < 0 && (
-              <AlertTriangle size={24} className="text-red-400 animate-bounce" />
+              <AlertTriangle size={24} className="text-danger animate-bounce" />
             )}
           </div>
-          <div className="mt-4 text-xs text-slate-400">
+          <div className="mt-4 text-xs text-slate-600 font-mono">
             {remainingBudget < 0 ? (
-              <span className="text-red-400/80 font-bold">You are over budget! Avoid shopping.</span>
+              <span className="text-danger font-bold">You are over budget! Avoid shopping.</span>
             ) : (
               <span>Keep it up! You have active surplus savings.</span>
             )}
@@ -278,21 +278,21 @@ export default function Expenses() {
       {/* Main Grid: Form Left, Stats Right */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left: Logger Form */}
-        <div className="lg:col-span-4 glass-card p-6 border border-white/5 bg-slate-900/40 backdrop-blur-md rounded-2xl sticky top-24">
-          <div className="flex items-center gap-2 mb-6">
-            <Sparkles size={18} className="text-indigo-400" />
-            <h2 className="text-lg font-bold text-white">
+        <div className="lg:col-span-4 bg-white border-2 border-secondary p-6 rounded-[20px_10px_220px_12px/14px_200px_12px_250px] shadow-[3px_4px_0px_#263D5B] sticky top-24">
+          <div className="flex items-center gap-2 mb-6 border-b-2 border-secondary pb-3">
+            <Sparkles size={18} className="text-primary animate-pulse" />
+            <h2 className="text-lg font-bold text-secondary font-sans">
               {editingId ? 'Edit Expense Log' : 'Log New Expense'}
             </h2>
           </div>
 
-          <form onSubmit={handleFormSubmit} className="space-y-4">
+          <form onSubmit={handleFormSubmit} className="space-y-4 font-mono text-sm">
             <div>
-              <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
                 Amount ({currency}) *
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-705">
                   <DollarSign size={16} />
                 </div>
                 <input
@@ -301,23 +301,23 @@ export default function Expenses() {
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder="24.50"
-                  className="glass-input pl-9 w-full"
+                  className="doodle-input pl-9 w-full shadow-[1.5px_2px_0px_#263D5B]"
                   required
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
                 Category
               </label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="glass-input w-full bg-slate-950 text-slate-200"
+                className="doodle-input w-full bg-white text-secondary shadow-[1.5px_2px_0px_#263D5B]"
               >
                 {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id} className="bg-slate-950 text-slate-200">
+                  <option key={cat.id} value={cat.id} className="bg-white text-secondary font-mono">
                     {cat.name}
                   </option>
                 ))}
@@ -325,11 +325,11 @@ export default function Expenses() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
                 Note / Description
               </label>
               <div className="relative">
-                <div className="absolute top-3 left-3 text-slate-500">
+                <div className="absolute top-3 left-3 text-slate-700">
                   <FileText size={16} />
                 </div>
                 <input
@@ -337,24 +337,24 @@ export default function Expenses() {
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                   placeholder="Grocery trip, books, Uber ride..."
-                  className="glass-input pl-9 w-full"
+                  className="doodle-input pl-9 w-full shadow-[1.5px_2px_0px_#263D5B]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
                 Expense Date *
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-700">
                   <Calendar size={16} />
                 </div>
                 <input
                   type="date"
                   value={expenseDate}
                   onChange={(e) => setExpenseDate(e.target.value)}
-                  className="glass-input pl-9 w-full"
+                  className="doodle-input pl-9 w-full shadow-[1.5px_2px_0px_#263D5B]"
                   required
                 />
               </div>
@@ -365,7 +365,7 @@ export default function Expenses() {
                 <button
                   type="button"
                   onClick={handleCancelEdit}
-                  className="flex-1 py-3 px-4 rounded-xl border border-white/10 text-slate-300 hover:bg-white/5 font-bold text-xs transition-all"
+                  className="flex-1 py-3 px-4 rounded-[120px_10px_100px_10px/10px_100px_10px_120px] border-2 border-secondary bg-white text-slate-850 hover:bg-slate-50 hover:translate-y-0.5 hover:shadow-[1px_1.5px_0px_#263D5B] shadow-[2px_3px_0px_#263D5B] font-bold text-xs transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -373,10 +373,10 @@ export default function Expenses() {
               <button
                 type="submit"
                 disabled={formLoading}
-                className="flex-2 flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition-all disabled:bg-indigo-600/50 cursor-pointer"
+                className="flex-2 flex items-center justify-center gap-2 py-3 px-4 rounded-[120px_10px_100px_10px/10px_100px_10px_120px] bg-primary hover:bg-primary-hover border-2 border-secondary text-secondary font-bold text-xs transition-all shadow-[2px_3px_0px_#263D5B] hover:translate-y-0.5 hover:shadow-[1px_1.5px_0px_#263D5B] disabled:opacity-50 cursor-pointer"
               >
                 {formLoading ? (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-secondary border-t-transparent rounded-full animate-spin" />
                 ) : editingId ? (
                   'Update Entry'
                 ) : (
@@ -393,31 +393,31 @@ export default function Expenses() {
         {/* Right: Lists & Categories */}
         <div className="lg:col-span-8 space-y-8">
           {/* Category Breakdown list */}
-          <div className="glass-card p-6 border border-white/5 bg-slate-900/40 backdrop-blur-md rounded-2xl">
-            <h3 className="text-lg font-bold text-white mb-6">Category Breakdown</h3>
+          <div className="bg-white border-2 border-secondary p-6 rounded-2xl shadow-[4px_4px_0px_#263D5B]">
+            <h3 className="text-lg font-bold text-secondary mb-6 font-sans border-b-2 border-secondary pb-2">Category Breakdown</h3>
             {categoryTotals.length === 0 ? (
-              <p className="text-sm text-slate-500 text-center py-4">No categories recorded. Log an expense above!</p>
+              <p className="text-sm text-slate-600 text-center py-4 font-mono">No categories recorded. Log an expense above!</p>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 font-mono">
                 {categoryTotals.map((cat) => {
                   const totalAll = expenses.reduce((sum, item) => sum + Number(item.amount), 0);
                   const sharePercentage = totalAll > 0 ? (cat.total / totalAll) * 100 : 0;
                   
                   return (
                     <div key={cat.id} className="space-y-2">
-                      <div className="flex justify-between items-center text-xs font-semibold">
-                        <span className="text-slate-300 flex items-center gap-2">
-                          <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: cat.fill }} />
+                      <div className="flex justify-between items-center text-xs font-bold">
+                        <span className="text-slate-800 flex items-center gap-2">
+                          <span className="w-3 h-3 rounded-full border border-secondary" style={{ backgroundColor: cat.fill }} />
                           {cat.name}
                         </span>
-                        <span className="text-white">
+                        <span className="text-secondary">
                           {currency}{cat.total.toFixed(2)}{' '}
-                          <span className="text-[10px] text-slate-500">({sharePercentage.toFixed(0)}%)</span>
+                          <span className="text-[10px] text-slate-505 font-normal">({sharePercentage.toFixed(0)}%)</span>
                         </span>
                       </div>
-                      <div className="w-full h-1.5 bg-slate-950/80 rounded-full overflow-hidden">
+                      <div className="w-full h-2.5 bg-slate-50 border-2 border-secondary rounded-full overflow-hidden">
                         <div 
-                          className="h-full rounded-full"
+                          className="h-full rounded-full border-r-2 border-secondary"
                           style={{ 
                             width: `${sharePercentage}%`,
                             backgroundColor: cat.fill 
@@ -433,17 +433,17 @@ export default function Expenses() {
 
           {/* Recent Log History */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-white">Expense Log History</h3>
+            <h3 className="text-lg font-bold text-secondary font-sans border-b-2 border-secondary pb-2">Expense Log History</h3>
             
             <div className="space-y-3">
               {expenses.length === 0 ? (
-                <div className="glass-card p-12 text-center border border-white/5 flex flex-col items-center justify-center space-y-4">
-                  <div className="p-4 bg-white/5 border border-white/10 rounded-2xl text-slate-400">
+                <div className="bg-white border-2 border-secondary p-12 shadow-[4px_4px_0px_#263D5B] flex flex-col items-center justify-center space-y-4 rounded-xl">
+                  <div className="p-4 bg-slate-50 border-2 border-secondary rounded-2xl text-slate-700 shadow-[1.5px_2px_0px_#263D5B]">
                     <FolderOpen size={32} />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-white">No expenses logged yet</h3>
-                    <p className="text-slate-400 text-sm mt-1 max-w-sm">
+                    <h3 className="text-lg font-bold text-secondary font-sans">No expenses logged yet</h3>
+                    <p className="text-slate-655 text-sm mt-1 max-w-sm font-mono">
                       Log your first financial expense on the left panel to begin.
                     </p>
                   </div>
@@ -456,47 +456,47 @@ export default function Expenses() {
                   return (
                     <div
                       key={expense.id}
-                      className="glass-card p-4 flex items-center justify-between gap-4 border border-white/5 bg-slate-900/40 hover:bg-slate-900/60"
+                      className="bg-white border-2 border-secondary p-4 flex items-center justify-between gap-4 shadow-[2.5px_3.5px_0px_#263D5B] hover:shadow-[4.5px_5.5px_0px_#263D5B] hover:-translate-y-0.5 transition-all rounded-xl"
                     >
                       <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <div>
-                          <div className="flex flex-wrap items-center gap-2 mb-1">
-                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border capitalize ${cat.color}`}>
+                          <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border-2 border-secondary font-mono shadow-[1px_1.5px_0px_#263D5B] ${cat.color}`}>
                               {cat.name}
                             </span>
-                            <span className="text-xs text-slate-500 flex items-center gap-1">
+                            <span className="text-xs text-slate-650 flex items-center gap-1 font-mono font-bold">
                               <Calendar size={12} />
                               <span>{expense.expense_date}</span>
                             </span>
                             {isThisWeek && (
-                              <span className="text-[10px] px-1.5 py-0.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 font-bold rounded">
+                              <span className="text-[9px] px-1.5 py-0.5 bg-primary border-2 border-secondary text-secondary font-bold rounded shadow-[1px_1.5px_0px_#263D5B] font-mono uppercase">
                                 This Week
                               </span>
                             )}
                           </div>
-                          <h4 className="text-sm font-semibold text-slate-300 truncate">
-                            {expense.note || <span className="text-slate-600 italic">No description</span>}
+                          <h4 className="text-sm font-bold text-secondary truncate font-mono">
+                            {expense.note || <span className="text-slate-400 italic">No description</span>}
                           </h4>
                         </div>
                         <div className="text-right shrink-0">
-                          <span className="text-lg font-bold text-white">
+                          <span className="text-lg font-bold text-secondary font-sans">
                             -{currency}{Number(expense.amount).toFixed(2)}
                           </span>
                         </div>
                       </div>
 
                       {/* Actions */}
-                      <div className="flex items-center gap-1 shrink-0 ml-4 border-l border-white/5 pl-4">
+                      <div className="flex items-center gap-1 shrink-0 ml-4 border-l-2 border-secondary pl-4">
                         <button
                           onClick={() => handleEditClick(expense)}
-                          className="p-2 text-slate-500 hover:text-white hover:bg-white/5 rounded-lg transition-all"
+                          className="p-2 text-slate-600 hover:text-secondary hover:bg-slate-50 hover:border-secondary border border-transparent rounded-lg transition-all cursor-pointer"
                           title="Edit Entry"
                         >
                           <Edit2 size={14} />
                         </button>
                         <button
                           onClick={() => handleDeleteExpense(expense.id, expense.amount)}
-                          className="p-2 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all"
+                          className="p-2 text-slate-600 hover:text-danger hover:bg-red-50 hover:border-danger border border-transparent rounded-lg transition-all cursor-pointer"
                           title="Delete Entry"
                         >
                           <Trash2 size={14} />

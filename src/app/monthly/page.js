@@ -117,13 +117,13 @@ export default function MonthlyHub() {
 
   // Category breakdown lists
   const categories = [
-    { name: 'food', label: 'Food & Dining', color: 'bg-emerald-500', barColor: '#10b981' },
-    { name: 'travel', label: 'Transport & Travel', color: 'bg-blue-500', barColor: '#3b82f6' },
-    { name: 'shopping', label: 'Shopping', color: 'bg-pink-500', barColor: '#ec4899' },
-    { name: 'study', label: 'Academics & Study', color: 'bg-purple-500', barColor: '#a855f7' },
-    { name: 'bills', label: 'Utilities & Bills', color: 'bg-orange-500', barColor: '#f97316' },
-    { name: 'entertainment', label: 'Leisure & Entertainment', color: 'bg-indigo-500', barColor: '#6366f1' },
-    { name: 'other', label: 'Others', color: 'bg-slate-500', barColor: '#64748b' }
+    { name: 'food', label: 'Food & Dining', color: 'bg-success', barColor: '#16a34a' },
+    { name: 'travel', label: 'Transport & Travel', color: 'bg-primary', barColor: '#49b6e5' },
+    { name: 'shopping', label: 'Shopping', color: 'bg-warning', barColor: '#d97706' },
+    { name: 'study', label: 'Academics & Study', color: 'bg-secondary', barColor: '#263d5b' },
+    { name: 'bills', label: 'Utilities & Bills', color: 'bg-danger', barColor: '#dc2626' },
+    { name: 'entertainment', label: 'Leisure & Entertainment', color: 'bg-primary-hover', barColor: '#38a3d2' },
+    { name: 'other', label: 'Others', color: 'bg-slate-500', barColor: '#4b5563' }
   ];
 
   const categoryData = categories.map(cat => {
@@ -151,7 +151,7 @@ export default function MonthlyHub() {
       particleCount: 50,
       spread: 40,
       origin: { y: 0.8 },
-      colors: ['#6366f1', '#a855f7']
+      colors: ['#3b82f6', '#8b5cf6']
     });
   };
 
@@ -200,8 +200,8 @@ export default function MonthlyHub() {
   if (loading || !user) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-        <p className="text-slate-400 text-sm">Organizing monthly charts...</p>
+        <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <p className="text-slate-700 text-sm font-mono">Organizing monthly charts...</p>
       </div>
     );
   }
@@ -211,32 +211,32 @@ export default function MonthlyHub() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-secondary tracking-tight font-sans">
             Monthly Analytics Hub
           </h1>
-          <p className="text-sm text-slate-400 mt-1.5">
-            Overview of spending thresholds, task outputs, and AI advisor reviews for <span className="text-indigo-400 font-semibold">{monthName}</span>.
+          <p className="text-sm text-slate-655 mt-1.5 font-mono">
+            Overview of spending thresholds, task outputs, and AI advisor reviews for <span className="text-primary font-bold">{monthName}</span>.
           </p>
         </div>
 
         <button
           onClick={generateMonthlyAIReview}
           disabled={loadingReview || fetchingDB}
-          className="glow-btn flex items-center justify-center gap-2 py-3.5 px-5 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-600/50 disabled:cursor-not-allowed text-white font-bold text-xs transition-all shadow-[0_0_20px_rgba(99,102,241,0.2)] cursor-pointer"
+          className="doodle-btn flex items-center justify-center gap-2 py-3.5 px-5 text-xs font-bold transition-all cursor-pointer"
         >
           {loadingReview ? (
             <>
-              <RefreshCw size={14} className="animate-spin" />
+              <RefreshCw size={14} className="animate-spin text-secondary" />
               <span>Consulting Monthly Auditor...</span>
             </>
           ) : monthlyReview ? (
             <>
-              <RefreshCw size={14} />
+              <RefreshCw size={14} className="text-secondary" />
               <span>Regenerate Monthly Review</span>
             </>
           ) : (
             <>
-              <Sparkles size={14} className="pulse-glow" />
+              <Sparkles size={14} className="text-secondary animate-pulse" />
               <span>Request Monthly AI Review</span>
             </>
           )}
@@ -245,32 +245,32 @@ export default function MonthlyHub() {
 
       {/* Stats Ribbon */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="glass-card p-6 bg-slate-900/40 border border-white/5 flex flex-col justify-between">
-          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Monthly Budget Target</span>
+        <div className="doodle-card p-6 flex flex-col justify-between">
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">Monthly Budget Target</span>
           <div className="mt-2 flex items-baseline">
-            <span className="text-3xl font-extrabold text-white">{currency}{monthlyBudgetLimit.toFixed(2)}</span>
-            <span className="text-slate-500 text-xs ml-1">/ month</span>
+            <span className="text-3xl font-extrabold text-secondary font-sans">{currency}{monthlyBudgetLimit.toFixed(2)}</span>
+            <span className="text-slate-500 text-xs ml-1 font-mono">/ month</span>
           </div>
-          <span className="mt-3 text-xs text-slate-500">Persisted locally in your browser.</span>
+          <span className="mt-3 text-xs text-slate-600 font-mono">Persisted locally in your browser.</span>
         </div>
 
-        <div className="glass-card p-6 bg-slate-900/40 border border-white/5 flex flex-col justify-between">
-          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Spent This Month</span>
+        <div className="doodle-card p-6 flex flex-col justify-between">
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">Spent This Month</span>
           <div className="mt-2">
-            <span className="text-3xl font-extrabold text-white">{currency}{totalSpentThisMonth.toFixed(2)}</span>
+            <span className="text-3xl font-extrabold text-secondary font-sans">{currency}{totalSpentThisMonth.toFixed(2)}</span>
           </div>
-          <span className="mt-3 text-xs text-indigo-400 font-semibold">{currentMonthExpenses.length} transaction entries logged</span>
+          <span className="mt-3 text-xs text-primary font-bold font-mono">{currentMonthExpenses.length} transaction entries logged</span>
         </div>
 
-        <div className="glass-card p-6 bg-slate-900/40 border border-white/5 flex flex-col justify-between">
-          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Remaining Balance</span>
+        <div className="doodle-card p-6 flex flex-col justify-between">
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">Remaining Balance</span>
           <div className="mt-2 flex items-center gap-2">
-            <span className={`text-3xl font-extrabold ${remainingBudget < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
+            <span className={`text-3xl font-extrabold font-sans ${remainingBudget < 0 ? 'text-danger' : 'text-success'}`}>
               {currency}{remainingBudget.toFixed(2)}
             </span>
-            {remainingBudget < 0 && <AlertTriangle size={20} className="text-red-400 animate-bounce" />}
+            {remainingBudget < 0 && <AlertTriangle size={20} className="text-danger animate-bounce" />}
           </div>
-          <span className="mt-3 text-xs text-slate-500">
+          <span className="mt-3 text-xs text-slate-600 font-mono">
             {remainingBudget < 0 ? 'Exceeded monthly savings margin!' : 'Under monthly budget target.'}
           </span>
         </div>
@@ -281,14 +281,14 @@ export default function MonthlyHub() {
         {/* Left Col: Setup Budget & Tasks stats */}
         <div className="lg:col-span-5 space-y-6">
           {/* Monthly Budget Setup Card */}
-          <div className="glass-card p-6 border border-white/5 bg-slate-900/40">
-            <div className="flex items-center gap-2 mb-4">
-              <TrendingUp size={18} className="text-indigo-400" />
-              <h3 className="text-base font-bold text-white">Adjust Month Limit</h3>
+          <div className="doodle-card p-6">
+            <div className="flex items-center gap-2 mb-4 border-b-2 border-secondary pb-2">
+              <TrendingUp size={18} className="text-primary" />
+              <h3 className="text-base font-bold text-secondary font-sans">Adjust Month Limit</h3>
             </div>
-            <form onSubmit={handleSaveBudget} className="space-y-4">
+            <form onSubmit={handleSaveBudget} className="space-y-4 font-mono text-sm">
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-bold text-sm">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-secondary font-bold text-sm">
                   {currency}
                 </div>
                 <input
@@ -297,13 +297,13 @@ export default function MonthlyHub() {
                   value={monthlyBudgetInput}
                   onChange={(e) => setMonthlyBudgetInput(e.target.value)}
                   placeholder="1000"
-                  className="glass-input pl-10 w-full"
+                  className="doodle-input pl-10 w-full font-bold shadow-[2px_2px_0px_var(--secondary)]"
                   required
                 />
               </div>
               <button
                 type="submit"
-                className="glow-btn w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition-all cursor-pointer"
+                className="doodle-btn w-full py-3 text-xs font-bold transition-all cursor-pointer"
               >
                 Set Monthly Budget Limit
               </button>
@@ -311,29 +311,29 @@ export default function MonthlyHub() {
           </div>
 
           {/* Monthly Task Completion Status */}
-          <div className="glass-card p-6 border border-white/5 bg-slate-900/40">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2 text-indigo-400 font-bold text-base">
+          <div className="doodle-card p-6">
+            <div className="flex items-center justify-between mb-4 border-b-2 border-secondary pb-2">
+              <div className="flex items-center gap-2 text-primary font-bold text-base font-sans">
                 <Calendar size={18} />
                 <span>Monthly Task Stats</span>
               </div>
             </div>
             
             {currentMonthTasks.length === 0 ? (
-              <p className="text-center py-6 text-slate-500 text-xs">No tasks recorded in this calendar month.</p>
+              <p className="text-center py-6 text-slate-600 text-xs font-mono">No tasks recorded in this calendar month.</p>
             ) : (
-              <div className="grid grid-cols-3 gap-3 text-center">
-                <div className="bg-emerald-500/5 border border-emerald-500/10 rounded-xl p-3.5">
-                  <span className="block text-xl font-black text-emerald-400">{completedTasksCount}</span>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Done</span>
+              <div className="grid grid-cols-3 gap-3 text-center font-mono">
+                <div className="bg-emerald-50 border-2 border-secondary rounded-[15px_4px_12px_4px/4px_12px_4px_15px] p-3.5 shadow-[2px_2px_0px_var(--secondary)]">
+                  <span className="block text-xl font-black text-success">{completedTasksCount}</span>
+                  <span className="text-[10px] text-slate-700 uppercase tracking-wider font-bold">Done</span>
                 </div>
-                <div className="bg-indigo-500/5 border border-indigo-500/10 rounded-xl p-3.5">
-                  <span className="block text-xl font-black text-indigo-400">{pendingTasksCount}</span>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Pending</span>
+                <div className="bg-blue-50 border-2 border-secondary rounded-[15px_4px_12px_4px/4px_12px_4px_15px] p-3.5 shadow-[2px_2px_0px_var(--secondary)]">
+                  <span className="block text-xl font-black text-primary">{pendingTasksCount}</span>
+                  <span className="text-[10px] text-slate-700 uppercase tracking-wider font-bold">Pending</span>
                 </div>
-                <div className="bg-red-500/5 border border-red-500/10 rounded-xl p-3.5">
-                  <span className="block text-xl font-black text-red-400">{missedTasksCount}</span>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Missed</span>
+                <div className="bg-red-50 border-2 border-secondary rounded-[15px_4px_12px_4px/4px_12px_4px_15px] p-3.5 shadow-[2px_2px_0px_var(--secondary)]">
+                  <span className="block text-xl font-black text-danger">{missedTasksCount}</span>
+                  <span className="text-[10px] text-slate-700 uppercase tracking-wider font-bold">Missed</span>
                 </div>
               </div>
             )}
@@ -342,33 +342,35 @@ export default function MonthlyHub() {
 
         {/* Right Col: Category Chart */}
         <div className="lg:col-span-7">
-          <div className="glass-card p-6 border border-white/5 bg-slate-900/40 h-full flex flex-col justify-between">
+          <div className="doodle-card p-6 h-full flex flex-col justify-between">
             <div>
-              <div className="flex items-center gap-2 mb-4">
-                <BarChart3 size={18} className="text-emerald-400" />
-                <h3 className="text-base font-bold text-white">Monthly Expenditure Category Shares</h3>
+              <div className="flex items-center gap-2 mb-4 border-b-2 border-secondary pb-2">
+                <BarChart3 size={18} className="text-success" />
+                <h3 className="text-base font-bold text-secondary font-sans">Monthly Expenditure Category Shares</h3>
               </div>
               
               {categoryData.length === 0 ? (
-                <div className="h-48 w-full flex items-center justify-center text-slate-500 text-xs">
+                <div className="h-48 w-full flex items-center justify-center text-slate-650 text-xs font-mono">
                   No expense records logged in {monthName}.
                 </div>
               ) : (
                 <div className="h-56 w-full mt-4">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={categoryData} layout="vertical" margin={{ left: -10, right: 10, top: 0, bottom: 0 }}>
-                      <XAxis type="number" stroke="#64748b" fontSize={10} tickLine={false} axisLine={false} />
-                      <YAxis dataKey="label" type="category" stroke="#64748b" fontSize={10} tickLine={false} axisLine={false} width={100} />
+                      <XAxis type="number" stroke="var(--secondary)" fontSize={10} tickLine={true} axisLine={true} style={{ fontFamily: 'var(--font-mono)' }} />
+                      <YAxis dataKey="label" type="category" stroke="var(--secondary)" fontSize={10} tickLine={true} axisLine={true} width={110} style={{ fontFamily: 'var(--font-mono)' }} />
                       <Tooltip 
                         contentStyle={{ 
-                          backgroundColor: '#0f172a', 
-                          borderColor: 'rgba(255,255,255,0.08)', 
-                          borderRadius: '0.75rem', 
-                          color: '#f8fafc' 
+                          backgroundColor: '#ffffff', 
+                          border: '2px solid var(--secondary)', 
+                          borderRadius: '8px', 
+                          color: 'var(--foreground)',
+                          fontFamily: 'var(--font-mono)',
+                          boxShadow: '3px 3px 0px var(--secondary)'
                         }}
                         formatter={(val) => [`${currency}${Number(val).toFixed(2)}`, 'Spent']}
                       />
-                      <Bar dataKey="total" radius={[0, 4, 4, 0]}>
+                      <Bar dataKey="total" radius={[0, 0, 0, 0]} stroke="var(--secondary)" strokeWidth={1.5}>
                         {categoryData.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.barColor} />
                         ))}
@@ -383,77 +385,77 @@ export default function MonthlyHub() {
       </div>
 
       {/* AI monthly reviews display */}
-      <div className="border-t border-white/5 pt-8">
+      <div className="border-t-2 border-secondary pt-8">
         <div className="flex items-center gap-2 mb-6">
-          <Sparkles size={20} className="text-emerald-400" />
-          <h3 className="text-lg font-bold text-white">Savan's Monthly Performance Review</h3>
+          <Sparkles size={20} className="text-secondary animate-pulse" />
+          <h3 className="text-xl font-bold text-secondary font-sans">Savan's Monthly Performance Review</h3>
         </div>
 
         {fetchingDB ? (
           <div className="flex flex-col items-center justify-center py-12 gap-2">
-            <div className="w-6 h-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-            <span className="text-xs text-slate-500">Checking monthly review archives...</span>
+            <div className="w-6 h-6 border-2 border-secondary border-t-transparent rounded-full animate-spin" />
+            <span className="text-xs text-slate-600 font-mono">Checking monthly review archives...</span>
           </div>
         ) : !monthlyReview ? (
-          <div className="glass-card p-10 text-center border border-white/5 flex flex-col items-center space-y-4 max-w-2xl mx-auto bg-slate-900/20">
-            <div className="p-3.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-2xl">
-              <Sparkles size={24} />
+          <div className="doodle-card p-10 text-center flex flex-col items-center space-y-4 max-w-2xl mx-auto">
+            <div className="p-3.5 bg-slate-50 border-2 border-secondary text-primary rounded-[15px_4px_12px_4px/4px_12px_4px_15px] shadow-[2px_2px_0px_var(--secondary)]">
+              <Sparkles size={24} className="text-secondary" />
             </div>
-            <h4 className="text-sm font-bold text-white">No Monthly Review generated yet</h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h4 className="text-sm font-bold text-secondary font-sans">No Monthly Review generated yet</h4>
+            <p className="text-xs text-slate-650 leading-relaxed font-mono">
               Generate a smart summary report at the end of the month. Savan will scan your completed tasks, evaluate category leakages, and output a detailed advisor review.
             </p>
             <button
               onClick={generateMonthlyAIReview}
               disabled={loadingReview}
-              className="glow-btn py-2 px-5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold transition-all cursor-pointer"
+              className="doodle-btn py-2 px-5 text-xs font-bold transition-all cursor-pointer"
             >
               Ask Savan for Monthly Audit
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="glass-card p-6 border border-white/5 bg-slate-900/40 flex flex-col justify-between">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-mono">
+            <div className="doodle-card p-6 flex flex-col justify-between">
               <div>
-                <div className="flex items-center gap-2 text-indigo-400 mb-3 font-semibold text-sm">
-                  <Activity size={16} />
-                  <span>Task Productivity Audit</span>
+                <div className="flex items-center gap-2 text-primary mb-3 font-bold text-sm">
+                  <Activity size={16} className="text-secondary" />
+                  <span className="text-secondary">Task Productivity Audit</span>
                 </div>
-                <p className="text-xs text-slate-300 leading-relaxed whitespace-pre-line">
+                <p className="text-xs text-slate-800 leading-relaxed whitespace-pre-line">
                   {monthlyReview.productivity_review}
                 </p>
               </div>
-              <span className="text-[10px] text-slate-500 mt-6 uppercase tracking-widest block border-t border-white/5 pt-3">
+              <span className="text-[10px] text-slate-500 mt-6 uppercase tracking-widest block border-t-2 border-slate-150 pt-3">
                 Monthly Target Cycle
               </span>
             </div>
 
-            <div className="glass-card p-6 border border-white/5 bg-slate-900/40 flex flex-col justify-between">
+            <div className="doodle-card p-6 flex flex-col justify-between">
               <div>
-                <div className="flex items-center gap-2 text-emerald-400 mb-3 font-semibold text-sm">
-                  <Wallet size={16} />
-                  <span>Financial Spend Audit</span>
+                <div className="flex items-center gap-2 text-success mb-3 font-bold text-sm">
+                  <Wallet size={16} className="text-success" />
+                  <span className="text-success">Financial Spend Audit</span>
                 </div>
-                <p className="text-xs text-slate-300 leading-relaxed whitespace-pre-line">
+                <p className="text-xs text-slate-800 leading-relaxed whitespace-pre-line">
                   {monthlyReview.spending_review}
                 </p>
               </div>
-              <span className="text-[10px] text-slate-500 mt-6 uppercase tracking-widest block border-t border-white/5 pt-3">
+              <span className="text-[10px] text-slate-500 mt-6 uppercase tracking-widest block border-t-2 border-slate-150 pt-3">
                 Total Month Spent
               </span>
             </div>
 
-            <div className="glass-card p-6 border border-white/5 bg-slate-900/40 flex flex-col justify-between">
+            <div className="doodle-card p-6 flex flex-col justify-between">
               <div>
-                <div className="flex items-center gap-2 text-amber-400 mb-3 font-semibold text-sm">
-                  <Info size={16} />
-                  <span>Warnings & Actions</span>
+                <div className="flex items-center gap-2 text-warning mb-3 font-bold text-sm">
+                  <Info size={16} className="text-warning" />
+                  <span className="text-warning">Warnings & Actions</span>
                 </div>
-                <p className="text-xs text-slate-300 leading-relaxed whitespace-pre-line">
+                <p className="text-xs text-slate-800 leading-relaxed whitespace-pre-line">
                   {monthlyReview.warnings_and_advice}
                 </p>
               </div>
-              <span className="text-[10px] text-slate-500 mt-6 uppercase tracking-widest block border-t border-white/5 pt-3">
+              <span className="text-[10px] text-slate-500 mt-6 uppercase tracking-widest block border-t-2 border-slate-150 pt-3">
                 Savan Coach Advice
               </span>
             </div>

@@ -94,90 +94,86 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-[80vh] flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8 relative">
-      {/* Background radial glows */}
-      <div className="absolute w-80 h-80 rounded-full bg-indigo-600/10 blur-[100px] top-1/4 left-1/4 pointer-events-none" />
-      <div className="absolute w-80 h-80 rounded-full bg-emerald-600/10 blur-[100px] bottom-1/4 right-1/4 pointer-events-none" />
-
+    <div className="min-h-[80vh] flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8 relative bg-background">
       <div className="max-w-md w-full z-10">
         {/* Head branding */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center font-extrabold text-white shadow-[0_0_20px_rgba(99,102,241,0.5)]">
+            <div className="w-10 h-10 rounded-[12px_4px_14px_4px/4px_14px_4px_12px] bg-secondary flex items-center justify-center font-extrabold text-white shadow-[2px_2px_0px_var(--secondary)]">
               S
             </div>
-            <span className="font-bold text-2xl bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">
+            <span className="font-bold text-2xl text-secondary font-sans">
               Savan
             </span>
           </Link>
-          <h2 className="text-3xl font-extrabold text-white tracking-tight">
+          <h2 className="text-3xl font-extrabold text-secondary tracking-tight font-sans">
             Create your account
           </h2>
-          <p className="mt-2 text-sm text-slate-400">
+          <p className="mt-2 text-sm text-slate-655 font-mono">
             Join Savan to start organizing tasks and tracking finances
           </p>
         </div>
 
         {/* Card Form */}
-        <div className="glass-card p-8 border border-white/5 bg-slate-900/40 backdrop-blur-md rounded-2xl">
+        <div className="doodle-card p-8">
           {success ? (
-            <div className="text-center py-4 space-y-4">
-              <div className="mx-auto w-12 h-12 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-full flex items-center justify-center mb-2">
-                <CheckCircle size={28} />
+            <div className="text-center py-4 space-y-4 font-mono">
+              <div className="mx-auto w-12 h-12 bg-emerald-50 border-2 border-secondary text-success rounded-[15px_4px_12px_4px/4px_12px_4px_15px] flex items-center justify-center mb-2 shadow-[2px_2px_0px_var(--secondary)]">
+                <CheckCircle size={28} className="text-success" />
               </div>
-              <h3 className="text-xl font-bold text-white">Registration Successful!</h3>
-              <p className="text-sm text-slate-400 leading-relaxed">
-                We've sent a verification email to <span className="font-semibold text-slate-200">{email}</span>. 
+              <h3 className="text-xl font-bold text-secondary font-sans">Registration Successful!</h3>
+              <p className="text-sm text-slate-700 leading-relaxed">
+                We've sent a verification email to <span className="font-bold text-secondary">{email}</span>. 
                 Please click the activation link to complete your signup and log in.
               </p>
               <div className="pt-4">
                 <Link 
                   href="/login" 
-                  className="inline-flex items-center gap-2 py-2.5 px-6 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-white transition-all"
+                  className="doodle-btn py-2.5 px-6 font-bold transition-all"
                 >
                   <span>Go to Sign In</span>
-                  <ArrowRight size={16} />
+                  <ArrowRight size={16} className="text-secondary" />
                 </Link>
               </div>
             </div>
           ) : (
             <>
               {!isEnvConfigured && (
-                <div className="mb-6 p-4 bg-amber-500/10 border border-amber-500/20 text-amber-300 text-sm rounded-xl flex flex-col gap-2">
-                  <div className="flex items-center gap-2 font-bold uppercase tracking-wide text-xs text-amber-400">
+                <div className="mb-6 p-4 bg-amber-50 border-2 border-secondary text-slate-800 text-sm rounded-[15px_4px_12px_4px/4px_12px_4px_15px] flex flex-col gap-2 font-mono shadow-[2px_2px_0px_var(--secondary)]">
+                  <div className="flex items-center gap-2 font-bold uppercase tracking-wide text-xs text-warning border-b border-slate-205 pb-1.5 animate-pulse">
                     <AlertCircle size={16} />
                     <span>Configuration Required</span>
                   </div>
-                  <p className="text-xs text-slate-300 leading-relaxed">
+                  <p className="text-xs text-slate-700 leading-relaxed">
                     Savan needs your Supabase credentials to manage authentication and user accounts.
                   </p>
-                  <p className="text-xs text-slate-400 leading-relaxed">
-                    Please copy your URL and Anon Key from your Supabase Settings &gt; API and paste them in <code className="bg-black/30 px-1 py-0.5 rounded text-[11px] text-white font-mono">.env.local</code> inside the project root directory, then restart your dev server.
+                  <p className="text-xs text-slate-505 leading-relaxed font-bold">
+                    Please copy your URL and Anon Key from your Supabase Settings &gt; API and paste them in <code className="bg-slate-100 border border-secondary px-1 py-0.5 rounded text-[11px] text-secondary font-mono">.env.local</code> inside the project root directory, then restart your dev server.
                   </p>
                 </div>
               )}
 
               {error && (
-                <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-300 text-sm rounded-xl flex items-start gap-2.5">
+                <div className="mb-6 p-4 bg-red-50 border-2 border-secondary text-danger text-sm rounded-[15px_4px_12px_4px/4px_12px_4px_15px] flex items-start gap-2.5 font-mono shadow-[2px_2px_0px_var(--secondary)]">
                   <AlertCircle size={18} className="shrink-0 mt-0.5" />
                   <span>{error}</span>
                 </div>
               )}
 
-              <form onSubmit={handleSignup} className="space-y-4">
+              <form onSubmit={handleSignup} className="space-y-4 font-mono text-sm">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-1.5">
                     Full Name
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-secondary">
                       <User size={18} />
                     </div>
                     <input
                       type="text"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      className="glass-input pl-10 w-full"
+                      className="doodle-input pl-10 w-full shadow-[1.5px_1.5px_0px_var(--secondary)]"
                       placeholder="John Doe"
                       required
                       disabled={!isEnvConfigured}
@@ -186,18 +182,18 @@ export default function Signup() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-1.5">
                     Email Address
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-secondary">
                       <Mail size={18} />
                     </div>
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="glass-input pl-10 w-full"
+                      className="doodle-input pl-10 w-full shadow-[1.5px_1.5px_0px_var(--secondary)]"
                       placeholder="name@example.com"
                       required
                       disabled={!isEnvConfigured}
@@ -206,18 +202,18 @@ export default function Signup() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-1.5">
                     Password
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-secondary">
                       <Lock size={18} />
                     </div>
                     <input
                       type={showPassword ? "text" : "password"}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="glass-input pl-10 pr-10 w-full"
+                      className="doodle-input pl-10 pr-10 w-full shadow-[1.5px_1.5px_0px_var(--secondary)]"
                       placeholder="Min. 6 characters"
                       required
                       disabled={!isEnvConfigured}
@@ -225,7 +221,7 @@ export default function Signup() {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-slate-300 transition-colors"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-secondary hover:text-primary transition-colors"
                     >
                       {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
@@ -233,18 +229,18 @@ export default function Signup() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-1.5">
                     Confirm Password
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-secondary">
                       <Lock size={18} />
                     </div>
                     <input
                       type={showConfirmPassword ? "text" : "password"}
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="glass-input pl-10 pr-10 w-full"
+                      className="doodle-input pl-10 pr-10 w-full shadow-[1.5px_1.5px_0px_var(--secondary)]"
                       placeholder="Repeat password"
                       required
                       disabled={!isEnvConfigured}
@@ -252,7 +248,7 @@ export default function Signup() {
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-slate-300 transition-colors"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-secondary hover:text-primary transition-colors"
                     >
                       {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
@@ -262,23 +258,23 @@ export default function Signup() {
                 <button
                   type="submit"
                   disabled={loading || !isEnvConfigured}
-                  className="w-full py-3.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-600/40 disabled:hover:bg-indigo-600/40 disabled:cursor-not-allowed font-bold text-white transition-all duration-300 hover:shadow-[0_0_20px_rgba(99,102,241,0.4)] flex items-center justify-center gap-2 mt-4"
+                  className="doodle-btn w-full py-3.5 px-4 text-xs font-bold transition-all disabled:opacity-50 flex items-center justify-center gap-2 mt-4 cursor-pointer"
                 >
                   {loading ? (
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <div className="w-5 h-5 border-2 border-secondary border-t-transparent rounded-full animate-spin" />
                   ) : (
                     <>
                       <span>Create Account</span>
-                      <ArrowRight size={18} />
+                      <ArrowRight size={18} className="text-secondary" />
                     </>
                   )}
                 </button>
               </form>
 
-              <div className="mt-6 text-center border-t border-white/5 pt-6">
-                <p className="text-sm text-slate-400">
+              <div className="mt-6 text-center border-t-2 border-slate-150 pt-6">
+                <p className="text-sm text-slate-655 font-mono">
                   Already have an account?{' '}
-                  <Link href="/login" className="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors">
+                  <Link href="/login" className="text-primary hover:text-primary-hover font-bold transition-colors underline">
                     Sign in
                   </Link>
                 </p>

@@ -24,7 +24,7 @@ export function SpendingChart({ data, currency = '$' }) {
 
   if (!mounted) {
     return (
-      <div className="h-64 w-full flex items-center justify-center text-slate-500 text-xs">
+      <div className="h-64 w-full flex items-center justify-center text-slate-600 text-xs font-mono">
         Preparing financial graphs...
       </div>
     );
@@ -36,30 +36,34 @@ export function SpendingChart({ data, currency = '$' }) {
         <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
           <XAxis 
             dataKey="day" 
-            stroke="#64748b" 
+            stroke="var(--secondary)" 
             fontSize={11} 
-            tickLine={false} 
-            axisLine={false} 
+            tickLine={true} 
+            axisLine={true} 
+            style={{ fontFamily: 'var(--font-mono)' }}
           />
           <YAxis 
-            stroke="#64748b" 
+            stroke="var(--secondary)" 
             fontSize={11} 
-            tickLine={false} 
-            axisLine={false} 
+            tickLine={true} 
+            axisLine={true} 
             tickFormatter={(val) => `${currency}${val}`}
+            style={{ fontFamily: 'var(--font-mono)' }}
           />
           <Tooltip 
             contentStyle={{ 
-              backgroundColor: '#0f172a', 
-              borderColor: 'rgba(255,255,255,0.08)', 
-              borderRadius: '0.75rem', 
-              color: '#f8fafc' 
+              backgroundColor: '#ffffff', 
+              border: '2px solid var(--secondary)', 
+              borderRadius: '8px', 
+              color: 'var(--foreground)',
+              fontFamily: 'var(--font-mono)',
+              boxShadow: '3px 3px 0px var(--secondary)'
             }}
-            cursor={{ fill: 'rgba(255, 255, 255, 0.03)' }}
+            cursor={{ fill: 'rgba(73, 182, 229, 0.15)' }}
           />
-          <Bar dataKey="amount" fill="#6366f1" radius={[4, 4, 0, 0]}>
+          <Bar dataKey="amount" fill="var(--primary)" stroke="var(--secondary)" strokeWidth={1.5} radius={[0, 0, 0, 0]}>
             {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.amount > 0 ? '#6366f1' : '#1e293b'} />
+              <Cell key={`cell-${index}`} fill={entry.amount > 0 ? 'var(--primary)' : '#e2e8f0'} />
             ))}
           </Bar>
         </BarChart>
@@ -78,22 +82,22 @@ export function TaskPieChart({ completedCount, pendingCount, missedCount }) {
 
   if (!mounted) {
     return (
-      <div className="h-64 w-full flex items-center justify-center text-slate-500 text-xs">
+      <div className="h-64 w-full flex items-center justify-center text-slate-600 text-xs font-mono">
         Preparing completion ratios...
       </div>
     );
   }
 
   const data = [
-    { name: 'Completed', value: completedCount, color: '#10b981' },
-    { name: 'Pending', value: pendingCount, color: '#6366f1' },
-    { name: 'Missed', value: missedCount, color: '#f43f5e' }
+    { name: 'Completed', value: completedCount, color: 'var(--success)' },
+    { name: 'Pending', value: pendingCount, color: 'var(--primary)' },
+    { name: 'Missed', value: missedCount, color: 'var(--danger)' }
   ].filter(item => item.value > 0);
 
   // If no tasks exist
   if (data.length === 0) {
     return (
-      <div className="h-64 w-full flex flex-col items-center justify-center text-slate-500 text-sm gap-2">
+      <div className="h-64 w-full flex flex-col items-center justify-center text-slate-500 text-sm gap-2 font-mono border-2 border-secondary rounded-[15px_4px_12px_4px/4px_12px_4px_15px] bg-slate-50/50 shadow-[2px_2px_0px_var(--secondary)]">
         <span>No scheduled tasks found.</span>
       </div>
     );
@@ -109,8 +113,10 @@ export function TaskPieChart({ completedCount, pendingCount, missedCount }) {
             cy="45%"
             innerRadius={60}
             outerRadius={80}
-            paddingAngle={5}
+            paddingAngle={3}
             dataKey="value"
+            stroke="var(--secondary)"
+            strokeWidth={1.5}
           >
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.color} />
@@ -118,19 +124,21 @@ export function TaskPieChart({ completedCount, pendingCount, missedCount }) {
           </Pie>
           <Tooltip 
             contentStyle={{ 
-              backgroundColor: '#0f172a', 
-              borderColor: 'rgba(255,255,255,0.08)', 
-              borderRadius: '0.75rem', 
-              color: '#f8fafc' 
+              backgroundColor: '#ffffff', 
+              border: '2px solid var(--secondary)', 
+              borderRadius: '8px', 
+              color: 'var(--foreground)',
+              fontFamily: 'var(--font-mono)',
+              boxShadow: '3px 3px 0px var(--secondary)'
             }}
           />
           <Legend 
             verticalAlign="bottom" 
             height={36} 
-            iconType="circle"
+            iconType="square"
             formatter={(value, entry) => {
               const item = data.find(d => d.name === value);
-              return <span className="text-xs text-slate-400 font-semibold">{value} ({item ? item.value : 0})</span>;
+              return <span className="text-xs text-secondary font-bold font-mono">{value} ({item ? item.value : 0})</span>;
             }}
           />
         </PieChart>

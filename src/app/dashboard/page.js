@@ -145,7 +145,7 @@ export default function Dashboard() {
         particleCount: 80,
         spread: 50,
         origin: { y: 0.8 },
-        colors: ['#6366f1', '#10b981']
+        colors: ['#49b6e5', '#16a34a']
       });
 
       addNotification(`Task "${task.title}" completed!`, 'success');
@@ -159,8 +159,8 @@ export default function Dashboard() {
   if (loading || !user) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-        <p className="text-slate-400 text-sm">Organizing dashboard workspace...</p>
+        <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <p className="text-slate-700 text-sm font-mono">Organizing dashboard workspace...</p>
       </div>
     );
   }
@@ -170,33 +170,33 @@ export default function Dashboard() {
       {/* Welcome Header & Currency Selector */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-secondary tracking-tight font-sans">
             Hello,{' '}
-            <span className="bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">
+            <span className="text-primary underline decoration-wavy decoration-secondary">
               {profile?.full_name || 'User'}
             </span>
             !
           </h1>
-          <p className="text-sm text-slate-400 mt-1.5">
+          <p className="text-sm text-slate-655 mt-1.5 font-mono">
             Here is your visual roadmap for tasks and financial budgets this week.
           </p>
         </div>
 
         {/* Currency Selector Panel */}
-        <div className="flex items-center gap-2.5 glass-card py-2.5 px-4 border border-white/5 w-fit">
-          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Currency:</span>
+        <div className="flex items-center gap-2.5 bg-white border-2 border-secondary py-2.5 px-4 rounded-[12px_4px_12px_4px/4px_12px_4px_12px] shadow-[2.5px_3px_0px_var(--secondary)] w-fit font-mono">
+          <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">Currency:</span>
           <select
             value={currency}
             onChange={(e) => setCurrency(e.target.value)}
-            className="bg-transparent border-none text-slate-200 text-xs font-bold focus:outline-none cursor-pointer"
+            className="bg-transparent border-none text-secondary text-xs font-bold focus:outline-none cursor-pointer"
           >
-            <option value="$" className="bg-slate-950 text-slate-200">USD ($)</option>
-            <option value="A$" className="bg-slate-950 text-slate-200">AUD (A$)</option>
-            <option value="₹" className="bg-slate-950 text-slate-200">INR (₹)</option>
-            <option value="€" className="bg-slate-950 text-slate-200">EUR (€)</option>
-            <option value="£" className="bg-slate-950 text-slate-200">GBP (£)</option>
-            <option value="¥" className="bg-slate-950 text-slate-200">JPY (¥)</option>
-            <option value="د.إ" className="bg-slate-950 text-slate-200">AED (د.إ)</option>
+            <option value="$" className="bg-white text-secondary font-mono">USD ($)</option>
+            <option value="A$" className="bg-white text-secondary font-mono">AUD (A$)</option>
+            <option value="₹" className="bg-white text-secondary font-mono">INR (₹)</option>
+            <option value="€" className="bg-white text-secondary font-mono">EUR (€)</option>
+            <option value="£" className="bg-white text-secondary font-mono">GBP (£)</option>
+            <option value="¥" className="bg-white text-secondary font-mono">JPY (¥)</option>
+            <option value="د.إ" className="bg-white text-secondary font-mono">AED (د.إ)</option>
           </select>
         </div>
       </div>
@@ -204,40 +204,40 @@ export default function Dashboard() {
       {/* Financial Health Ribbon */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Budget */}
-        <div className="glass-card p-6 bg-slate-900/40 border border-white/5 flex flex-col justify-between">
-          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Weekly Budget Limit</span>
+        <div className="doodle-card p-6 flex flex-col justify-between">
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">Weekly Budget Limit</span>
           <div className="mt-2 flex items-baseline">
-            <span className="text-3xl font-extrabold text-white">{currency}{budgetAmount.toFixed(2)}</span>
-            <span className="text-slate-500 text-xs ml-1">/ week</span>
+            <span className="text-3xl font-extrabold text-secondary font-sans">{currency}{budgetAmount.toFixed(2)}</span>
+            <span className="text-slate-500 text-xs ml-1 font-mono">/ week</span>
           </div>
-          <Link href="/budget" className="mt-3 text-xs text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1 w-fit">
+          <Link href="/budget" className="mt-3 text-xs text-secondary hover:text-primary font-bold font-mono flex items-center gap-1 w-fit underline">
             <span>Manage Budget</span>
             <ChevronRight size={14} />
           </Link>
         </div>
 
         {/* Spent */}
-        <div className="glass-card p-6 bg-slate-900/40 border border-white/5 flex flex-col justify-between">
-          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Spent This Week</span>
+        <div className="doodle-card p-6 flex flex-col justify-between">
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">Spent This Week</span>
           <div className="mt-2">
-            <span className="text-3xl font-extrabold text-white">{currency}{totalSpentThisWeek.toFixed(2)}</span>
+            <span className="text-3xl font-extrabold text-secondary font-sans">{currency}{totalSpentThisWeek.toFixed(2)}</span>
           </div>
-          <Link href="/expenses" className="mt-3 text-xs text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1 w-fit">
+          <Link href="/expenses" className="mt-3 text-xs text-secondary hover:text-primary font-bold font-mono flex items-center gap-1 w-fit underline">
             <span>Log Expense</span>
             <ChevronRight size={14} />
           </Link>
         </div>
 
         {/* Remaining */}
-        <div className="glass-card p-6 bg-slate-900/40 border border-white/5 flex flex-col justify-between">
-          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Remaining Wallet Balance</span>
+        <div className="doodle-card p-6 flex flex-col justify-between">
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">Remaining Wallet Balance</span>
           <div className="mt-2 flex items-center gap-2">
-            <span className={`text-3xl font-extrabold ${remainingBudget < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
+            <span className={`text-3xl font-extrabold font-sans ${remainingBudget < 0 ? 'text-danger' : 'text-success'}`}>
               {currency}{remainingBudget.toFixed(2)}
             </span>
-            {remainingBudget < 0 && <AlertTriangle size={20} className="text-red-400 animate-bounce" />}
+            {remainingBudget < 0 && <AlertTriangle size={20} className="text-danger animate-bounce" />}
           </div>
-          <span className="mt-3 text-xs text-slate-500">
+          <span className="mt-3 text-xs text-slate-600 font-mono">
             {remainingBudget < 0 ? 'Exceeded week threshold!' : 'Currently under budget.'}
           </span>
         </div>
@@ -250,46 +250,46 @@ export default function Dashboard() {
         <div className="lg:col-span-7 space-y-6">
           
           {/* Today's Checklist */}
-          <div className="glass-card p-6 border border-white/5 bg-slate-900/40">
-            <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/5">
-              <div className="flex items-center gap-2 text-indigo-400 font-bold text-base">
-                <Calendar size={18} />
+          <div className="doodle-card p-6">
+            <div className="flex items-center justify-between mb-4 pb-3 border-b-2 border-secondary">
+              <div className="flex items-center gap-2 text-secondary font-bold text-base font-sans">
+                <Calendar size={18} className="text-primary" />
                 <span>Today's Task Checklist</span>
               </div>
-              <Link href="/tasks" className="text-xs text-slate-400 hover:text-white font-medium flex items-center gap-1">
+              <Link href="/tasks" className="text-xs text-slate-700 hover:text-secondary font-bold font-mono flex items-center gap-1 underline">
                 <span>View Planner</span>
                 <ArrowRight size={12} />
               </Link>
             </div>
 
             {todayPendingTasks.length === 0 ? (
-              <div className="text-center py-8 text-slate-500 text-sm space-y-2">
+              <div className="text-center py-8 text-slate-600 text-sm font-mono space-y-2">
                 <p>No remaining tasks scheduled for today!</p>
-                <p className="text-xs text-slate-600">Enjoy your free time or add item in the planner.</p>
+                <p className="text-xs text-slate-500">Enjoy your free time or add items in the planner.</p>
               </div>
             ) : (
               <div className="space-y-3">
                 {todayPendingTasks.map((task) => (
                   <div
                     key={task.id}
-                    className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 transition-all"
+                    className="flex items-center gap-3 p-3 bg-slate-50 border-2 border-secondary rounded-[15px_4px_12px_4px/4px_12px_4px_15px] hover:bg-slate-100 transition-all shadow-[2.5px_3px_0px_var(--secondary)]"
                   >
                     <button
                       onClick={() => handleToggleComplete(task)}
-                      className="text-slate-400 hover:text-white transition-colors"
+                      className="text-secondary hover:text-primary transition-colors cursor-pointer"
                     >
-                      <Circle size={18} />
+                      <Circle size={18} className="hover:scale-110" />
                     </button>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-slate-200 truncate">{task.title}</p>
+                      <p className="text-sm font-bold text-secondary truncate font-sans">{task.title}</p>
                       {task.task_time && (
-                        <p className="text-xs text-slate-500 mt-0.5">{task.task_time.slice(0, 5)}</p>
+                        <p className="text-xs text-slate-660 mt-0.5 font-mono">{task.task_time.slice(0, 5)}</p>
                       )}
                     </div>
-                    <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold capitalize border ${
-                      task.priority === 'high' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
-                      task.priority === 'medium' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
-                      'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                    <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold capitalize border border-secondary font-mono shadow-[1px_1.5px_0px_var(--secondary)] ${
+                      task.priority === 'high' ? 'bg-red-100 text-danger' :
+                      task.priority === 'medium' ? 'bg-amber-100 text-warning' :
+                      'bg-emerald-100 text-success'
                     }`}>
                       {task.priority}
                     </span>
@@ -300,13 +300,13 @@ export default function Dashboard() {
           </div>
 
           {/* AI Advisor Preview Panel */}
-          <div className="glass-card p-6 border border-white/5 bg-slate-900/40">
-            <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/5">
-              <div className="flex items-center gap-2 text-emerald-400 font-bold text-base">
-                <Sparkles size={18} className="pulse-glow" />
+          <div className="doodle-card p-6">
+            <div className="flex items-center justify-between mb-4 pb-3 border-b-2 border-secondary">
+              <div className="flex items-center gap-2 text-secondary font-bold text-base font-sans">
+                <Sparkles size={18} className="animate-pulse text-primary" />
                 <span>Advisor Insight Snippet</span>
               </div>
-              <Link href="/ai-review" className="text-xs text-slate-400 hover:text-white font-medium flex items-center gap-1">
+              <Link href="/ai-review" className="text-xs text-slate-700 hover:text-secondary font-bold font-mono flex items-center gap-1 underline">
                 <span>View Full Review</span>
                 <ArrowRight size={12} />
               </Link>
@@ -314,38 +314,38 @@ export default function Dashboard() {
 
             {loadingAi ? (
               <div className="py-6 flex flex-col items-center justify-center gap-2">
-                <div className="w-5 h-5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-                <span className="text-xs text-slate-500">Checking for insights...</span>
+                <div className="w-5 h-5 border-2 border-secondary border-t-transparent rounded-full animate-spin" />
+                <span className="text-xs text-slate-655 font-mono">Checking for insights...</span>
               </div>
             ) : !aiSnippet ? (
-              <div className="text-center py-6 text-slate-500 text-sm space-y-3">
+              <div className="text-center py-6 text-slate-600 text-sm font-mono space-y-3">
                 <p>No audit review compiled for the week.</p>
                 <Link
                   href="/ai-review"
-                  className="inline-flex py-2 px-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold transition-all w-fit"
+                  className="doodle-btn py-2 px-4 text-xs font-bold transition-all w-fit"
                 >
                   Generate AI Audit
                 </Link>
               </div>
             ) : (
-              <div className="space-y-4">
-                <div className="p-4 bg-white/5 border border-white/5 rounded-xl space-y-2">
-                  <div className="flex items-center gap-2 text-xs font-bold text-amber-400">
-                    <Info size={14} />
+              <div className="space-y-4 font-mono">
+                <div className="p-4 bg-amber-50 border-2 border-secondary rounded-[15px_4px_12px_4px/4px_12px_4px_15px] shadow-[2px_3px_0px_var(--secondary)] space-y-2">
+                  <div className="flex items-center gap-2 text-xs font-bold text-warning">
+                    <Info size={14} className="text-warning" />
                     <span>Savan's Focus Warning</span>
                   </div>
-                  <p className="text-xs text-slate-300 leading-relaxed italic">
+                  <p className="text-xs text-slate-850 leading-relaxed italic">
                     "{aiSnippet.warnings_and_advice.slice(0, 180)}..."
                   </p>
                 </div>
                 <div className="grid grid-cols-2 gap-4 text-xs">
                   <div>
-                    <span className="block text-slate-500 mb-1 uppercase tracking-wider font-semibold">Productivity Log</span>
-                    <p className="text-slate-300 line-clamp-3">{aiSnippet.productivity_review}</p>
+                    <span className="block text-slate-500 mb-1 uppercase tracking-wider font-bold">Productivity Log</span>
+                    <p className="text-slate-800 line-clamp-3">{aiSnippet.productivity_review}</p>
                   </div>
                   <div>
-                    <span className="block text-slate-500 mb-1 uppercase tracking-wider font-semibold">Budget Audit</span>
-                    <p className="text-slate-300 line-clamp-3">{aiSnippet.spending_review}</p>
+                    <span className="block text-slate-500 mb-1 uppercase tracking-wider font-bold">Budget Audit</span>
+                    <p className="text-slate-800 line-clamp-3">{aiSnippet.spending_review}</p>
                   </div>
                 </div>
               </div>
@@ -357,14 +357,14 @@ export default function Dashboard() {
         {/* Right Column: Interactive Charts */}
         <div className="lg:col-span-5 space-y-6">
           {/* Chart: Daily Spending */}
-          <div className="glass-card p-6 border border-white/5 bg-slate-900/40">
-            <h3 className="text-base font-bold text-white mb-4">Daily Spending (Last 7 Days)</h3>
+          <div className="doodle-card p-6">
+            <h3 className="text-base font-bold text-secondary mb-4 font-sans border-b-2 border-secondary pb-2">Daily Spending (Last 7 Days)</h3>
             <SpendingChart data={chartData} currency={currency} />
           </div>
 
           {/* Chart: Task completion ratios */}
-          <div className="glass-card p-6 border border-white/5 bg-slate-900/40">
-            <h3 className="text-base font-bold text-white mb-4">Task Status Ratios</h3>
+          <div className="doodle-card p-6">
+            <h3 className="text-base font-bold text-secondary mb-4 font-sans border-b-2 border-secondary pb-2">Task Status Ratios</h3>
             <TaskPieChart 
               completedCount={completedTasksCount}
               pendingCount={pendingTasksCount}

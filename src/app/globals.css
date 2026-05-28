@@ -1,145 +1,175 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0f172a;
-  --foreground: #f8fafc;
+  --background: #fafafa;
+  --foreground: #111827;
+  --surface: #ffffff;
   
-  --primary: #6366f1;
-  --primary-hover: #4f46e5;
-  --secondary: #10b981;
-  --accent: #f43f5e;
+  --primary: #49b6e5;      /* Playful Sky Blue */
+  --primary-hover: #38a3d2;
+  --secondary: #263d5b;    /* Deep Navy Blue */
+  --success: #16a34a;      /* Playful Green */
+  --warning: #d97706;      /* Playful Amber */
+  --danger: #dc2626;       /* Playful Red */
   
-  --card-bg: rgba(30, 41, 59, 0.7);
-  --card-border: rgba(255, 255, 255, 0.08);
+  --card-bg: #ffffff;
+  --card-border: #263d5b;
 }
 
-@theme inline {
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-primary-hover: var(--primary-hover);
   --color-secondary: var(--secondary);
-  --color-accent: var(--accent);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-surface: var(--surface);
+  
+  --font-sans: var(--font-delius), system-ui, sans-serif;
+  --font-display: var(--font-delius), system-ui, sans-serif;
+  --font-mono: var(--font-mono), monospace;
 }
 
 body {
-  background: radial-gradient(circle at top left, #0f172a, #1e1b4b, #090d16);
+  background-color: var(--background);
+  /* Playful hand-drawn grid paper lines */
+  background-image: 
+    linear-gradient(#e5e7eb 1px, transparent 1px),
+    linear-gradient(90deg, #e5e7eb 1px, transparent 1px);
+  background-size: 24px 24px;
   color: var(--foreground);
   min-height: 100vh;
   overflow-x: hidden;
-  font-family: var(--font-outfit), var(--font-sans), sans-serif;
+  font-family: var(--font-sans), sans-serif;
 }
 
-/* Glassmorphism card utilities */
-.glass-card {
-  background: rgba(30, 41, 59, 0.5);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 1rem;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+/* Playful Doodle Border Radius Utilities */
+.glass-card, .artistic-card, .doodle-card {
+  background: var(--surface);
+  border: 2.5px solid var(--secondary);
+  /* Organic hand-sketched border contour */
+  border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  box-shadow: 3px 4px 0px var(--secondary);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--foreground);
 }
 
-.glass-card:hover {
-  border-color: rgba(99, 102, 241, 0.2);
-  box-shadow: 0 12px 40px 0 rgba(99, 102, 241, 0.1);
+.glass-card:hover, .artistic-card:hover, .doodle-card:hover {
+  transform: translate(-1.5px, -1.5px);
+  box-shadow: 5px 6px 0px var(--secondary);
+  border-color: var(--secondary);
 }
 
-/* Elegant input fields */
-.glass-input {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #f8fafc;
-  border-radius: 0.5rem;
+/* Hand-sketched Input Fields */
+.glass-input, .artistic-input, .doodle-input {
+  background: #ffffff;
+  border: 2px solid var(--secondary);
+  border-radius: 12px 4px 14px 4px/4px 14px 4px 12px;
+  color: var(--foreground);
   padding: 0.625rem 1rem;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.15s ease-in-out;
+  font-family: var(--font-mono), monospace;
+  font-weight: 500;
 }
 
-.glass-input:focus {
+.glass-input:focus, .artistic-input:focus, .doodle-input:focus {
   outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+  border-color: var(--primary);
+  box-shadow: 2px 3px 0px var(--secondary);
+  background: #ffffff;
 }
 
-/* Neon text & glows */
+/* Playful Hand-drawn Buttons */
+.glow-btn, .artistic-btn, .doodle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--primary);
+  /* Sky Blue uses dark Navy text for contrast validation */
+  color: var(--secondary) !important; 
+  border: 2.5px solid var(--secondary);
+  border-radius: 120px 15px 100px 15px/15px 100px 15px 120px;
+  box-shadow: 2px 3px 0px var(--secondary);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: var(--font-sans), sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.glow-btn:hover, .artistic-btn:hover, .doodle-btn:hover {
+  transform: translate(0.5px, 0.5px);
+  box-shadow: 1px 1.5px 0px var(--secondary);
+}
+
+.glow-btn:active, .artistic-btn:active, .doodle-btn:active {
+  transform: translate(2px, 3px);
+  box-shadow: 0px 0px 0px var(--secondary);
+}
+
+.glow-btn:disabled, .artistic-btn:disabled, .doodle-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: 1px 1px 0px var(--secondary) !important;
+}
+
+/* Secondary Button variant (Deep Navy with white text) */
+.artistic-btn-secondary, .doodle-btn-secondary {
+  background-color: var(--secondary) !important;
+  color: #ffffff !important;
+}
+
+.artistic-btn-secondary:hover, .doodle-btn-secondary:hover {
+  background-color: #344e70 !important;
+}
+
+/* Contrast tags adaptations */
 .text-neon-indigo {
-  text-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+  color: var(--secondary);
+  font-weight: bold;
 }
 
 .text-neon-emerald {
-  text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+  color: var(--success);
+  font-weight: bold;
 }
 
-.glow-btn {
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
+/* Overlap fix for inputs with absolute icons */
+.glass-input.pl-10, .artistic-input.pl-10, .doodle-input.pl-10 {
+  padding-left: 2.75rem !important;
 }
 
-.glow-btn::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -50%;
-  width: 200%;
-  height: 100%;
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.3) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  transform: skewX(-25deg);
-  transition: 0.75s;
-  opacity: 0;
-}
-
-.glow-btn:hover::after {
-  opacity: 1;
-  left: 125%;
+.glass-input.pl-9, .artistic-input.pl-9, .doodle-input.pl-9 {
+  padding-left: 2.5rem !important;
 }
 
 /* Premium Scrollbars */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: var(--background);
+  border-left: 2px solid var(--secondary);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: var(--secondary);
+  border: 2px solid var(--background);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: var(--primary);
 }
 
-/* Animation utilities */
-@keyframes pulseGlow {
-  0%, 100% {
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 1;
-    filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.6));
-  }
+/* Focus indicator for Accessibility */
+*:focus-visible {
+  outline: 3px solid var(--primary) !important;
+  outline-offset: 2px;
 }
-
-.pulse-glow {
-  animation: pulseGlow 2s infinite ease-in-out;
-}
-
-/* Overlap fix for inputs with absolute icons */
-.glass-input.pl-10 {
-  padding-left: 2.75rem !important;
-}
-
-.glass-input.pl-9 {
-  padding-left: 2.5rem !important;
-}
-

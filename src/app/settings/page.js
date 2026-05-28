@@ -150,8 +150,8 @@ export default function Settings() {
   if (loading || !user) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-        <p className="text-slate-400 text-sm">Opening settings module...</p>
+        <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <p className="text-slate-700 text-sm font-mono">Opening settings module...</p>
       </div>
     );
   }
@@ -160,10 +160,10 @@ export default function Settings() {
     <div className="space-y-8 pb-10">
       {/* Header */}
       <div>
-        <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
+        <h1 className="text-3xl md:text-4xl font-extrabold text-secondary tracking-tight font-sans">
           Account Settings
         </h1>
-        <p className="text-sm text-slate-400 mt-1.5">
+        <p className="text-sm text-slate-655 mt-1.5 font-mono">
           Configure profile settings, adjust notifications, and manage account data.
         </p>
       </div>
@@ -174,35 +174,35 @@ export default function Settings() {
         <div className="lg:col-span-6 space-y-6">
           
           {/* Profile Card */}
-          <div className="glass-card p-6 border border-white/5 bg-slate-900/40">
-            <div className="flex items-center gap-2.5 text-indigo-400 mb-6">
-              <User size={18} />
-              <h2 className="text-lg font-bold text-white">Profile Details</h2>
+          <div className="doodle-card p-6">
+            <div className="flex items-center gap-2.5 text-primary mb-6 border-b-2 border-secondary pb-2">
+              <User size={18} className="text-secondary" />
+              <h2 className="text-lg font-bold text-secondary font-sans">Profile Details</h2>
             </div>
 
-            <form onSubmit={handleProfileUpdate} className="space-y-4">
+            <form onSubmit={handleProfileUpdate} className="space-y-4 font-mono text-sm">
               <div>
-                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
                   Full Name
                 </label>
                 <input
                   type="text"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="glass-input w-full"
+                  className="doodle-input w-full shadow-[1.5px_1.5px_0px_var(--secondary)]"
                   placeholder="John Doe"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
                   Email Address
                 </label>
                 <input
                   type="email"
                   value={user.email}
-                  className="glass-input w-full opacity-50 cursor-not-allowed bg-slate-950"
+                  className="doodle-input w-full opacity-50 cursor-not-allowed bg-slate-50"
                   disabled
                   title="Email cannot be changed."
                 />
@@ -214,10 +214,10 @@ export default function Settings() {
               <button
                 type="submit"
                 disabled={updatingProfile}
-                className="py-3 px-5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition-all disabled:bg-indigo-600/50 cursor-pointer flex items-center justify-center gap-2"
+                className="doodle-btn py-3 px-5 text-xs font-bold transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
               >
                 {updatingProfile ? (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-secondary border-t-transparent rounded-full animate-spin" />
                 ) : (
                   'Update Profile'
                 )}
@@ -226,22 +226,22 @@ export default function Settings() {
           </div>
 
           {/* Web Notifications Config */}
-          <div className="glass-card p-6 border border-white/5 bg-slate-900/40">
-            <div className="flex items-center gap-2.5 text-indigo-400 mb-4">
-              <Bell size={18} />
-              <h2 className="text-lg font-bold text-white">Reminders & Notifications</h2>
+          <div className="doodle-card p-6">
+            <div className="flex items-center gap-2.5 text-primary mb-4 border-b-2 border-secondary pb-2">
+              <Bell size={18} className="text-secondary" />
+              <h2 className="text-lg font-bold text-secondary font-sans">Reminders & Notifications</h2>
             </div>
 
-            <p className="text-slate-400 text-sm leading-relaxed mb-6">
+            <p className="text-slate-655 text-sm leading-relaxed mb-6 font-mono">
               Savan prompts browser alert reminders 15 minutes before tasks. Grant notification access below. If denied, the app will fallback to displaying visual in-app alerts.
             </p>
 
-            <div className="flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded-xl mb-4">
+            <div className="flex items-center justify-between p-4 bg-slate-50 border-2 border-secondary rounded-[15px_4px_12px_4px/4px_12px_4px_15px] mb-4 font-mono shadow-[2px_2px_0px_var(--secondary)]">
               <div>
-                <span className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Permission Status</span>
+                <span className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Permission Status</span>
                 <span className={`text-xs font-bold capitalize ${
-                  notificationPermission === 'granted' ? 'text-emerald-400' :
-                  notificationPermission === 'denied' ? 'text-red-400' : 'text-blue-400'
+                  notificationPermission === 'granted' ? 'text-success' :
+                  notificationPermission === 'denied' ? 'text-danger' : 'text-primary'
                 }`}>
                   {notificationPermission === 'default' ? 'Not Requested' : notificationPermission}
                 </span>
@@ -249,7 +249,7 @@ export default function Settings() {
 
               <button
                 onClick={requestNotificationPermission}
-                className="py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold border border-white/5 transition-all"
+                className="doodle-btn doodle-btn-secondary py-2.5 px-4 text-xs font-bold transition-all cursor-pointer font-sans"
               >
                 Request Access
               </button>
@@ -262,47 +262,47 @@ export default function Settings() {
         <div className="lg:col-span-6 space-y-6">
           
           {/* System API Information */}
-          <div className="glass-card p-6 border border-white/5 bg-slate-900/40">
-            <div className="flex items-center gap-2.5 text-indigo-400 mb-4">
-              <Sparkles size={18} />
-              <h2 className="text-lg font-bold text-white">System Integration</h2>
+          <div className="doodle-card p-6">
+            <div className="flex items-center gap-2.5 text-primary mb-4 border-b-2 border-secondary pb-2">
+              <Sparkles size={18} className="text-secondary" />
+              <h2 className="text-lg font-bold text-secondary font-sans">System Integration</h2>
             </div>
 
-            <div className="space-y-4 text-xs text-slate-400 leading-relaxed">
+            <div className="space-y-4 text-xs text-slate-700 leading-relaxed font-mono">
               <p>
-                Savan connects with <span className="font-semibold text-slate-200">Supabase</span> for database storage and secure session tokens, and maps planner details using <span className="font-semibold text-slate-200">AI Coach API</span> keys.
+                Savan connects with <span className="font-bold text-secondary">Supabase</span> for database storage and secure session tokens, and maps planner details using <span className="font-bold text-secondary">AI Coach API</span> keys.
               </p>
               
-              <div className="p-4 bg-indigo-500/5 border border-indigo-500/10 rounded-xl space-y-2">
-                <span className="flex items-center gap-2 text-indigo-300 font-bold uppercase tracking-wide">
-                  <Info size={14} />
-                  <span>Developer Sandbox</span>
+              <div className="p-4 bg-blue-50 border-2 border-secondary rounded-[15px_4px_12px_4px/4px_12px_4px_15px] space-y-2 shadow-[2px_2px_0px_var(--secondary)]">
+                <span className="flex items-center gap-2 text-primary font-bold uppercase tracking-wide">
+                  <Info size={14} className="text-secondary" />
+                  <span className="text-secondary">Developer Sandbox</span>
                 </span>
-                <p>
-                  To change your API settings or load your own private models, modify the parameters inside the root configurations file <span className="font-semibold text-slate-300">.env.local</span>.
+                <p className="text-slate-850">
+                  To change your API settings or load your own private models, modify the parameters inside the root configurations file <span className="font-bold text-secondary">.env.local</span>.
                 </p>
               </div>
             </div>
           </div>
 
           {/* Danger Zone */}
-          <div className="glass-card p-6 border border-red-500/10 bg-red-950/5">
-            <div className="flex items-center gap-2.5 text-red-400 mb-4">
+          <div className="bg-red-50 border-2 border-danger p-6 rounded-[255px_15px_225px_15px/15px_225px_15px_255px] shadow-[3px_4px_0px_var(--danger)] transition-all hover:shadow-[5px_6px_0px_var(--danger)] hover:-translate-y-0.5">
+            <div className="flex items-center gap-2.5 text-danger mb-4 border-b-2 border-red-200 pb-2">
               <ShieldAlert size={18} />
-              <h2 className="text-lg font-bold text-white">Danger Zone</h2>
+              <h2 className="text-lg font-bold text-danger font-sans">Danger Zone</h2>
             </div>
 
-            <p className="text-slate-400 text-sm leading-relaxed mb-6">
+            <p className="text-slate-750 text-sm leading-relaxed mb-6 font-mono">
               Need to clear your dashboard and start fresh? You can wipe all recorded data. This will immediately purge all logged tasks, expenses, historical budgets, and AI records.
             </p>
 
             <button
               onClick={handleWipeData}
               disabled={wipingData}
-              className="py-3 px-5 rounded-xl bg-red-500/10 hover:bg-red-500 text-red-300 hover:text-white font-bold text-xs border border-red-500/20 hover:border-red-500 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="bg-white hover:bg-red-500 hover:text-white border-2 border-danger text-danger rounded-[120px_15px_100px_15px/15px_100px_15px_120px] py-3 px-5 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-[3px_3px_0px_var(--danger)] hover:translate-y-0.5 hover:shadow-[1px_1px_0px_var(--danger)] font-mono uppercase"
             >
               {wipingData ? (
-                <div className="w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
+                <div className="w-4 h-4 border-2 border-danger border-t-transparent rounded-full animate-spin" />
               ) : (
                 <>
                   <Trash2 size={14} />
@@ -314,6 +314,7 @@ export default function Settings() {
 
         </div>
 
+        {/* Settings Gear Floating background detail or similar icon overlay */}
       </div>
     </div>
   );

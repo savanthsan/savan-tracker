@@ -41,9 +41,18 @@ export default function Navbar() {
   ];
 
   const handleLogout = async () => {
-    await signOut();
-    window.location.href = '/';
+    try {
+      await signOut();
+    } catch (err) {
+      console.error('Error in handleLogout:', err);
+    } finally {
+      if (typeof document !== 'undefined') {
+        document.cookie = 'savan-session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax';
+      }
+      window.location.href = '/';
+    }
   };
+
 
   const getInitials = () => {
     if (profile?.full_name) {
@@ -58,18 +67,18 @@ export default function Navbar() {
   return (
     <>
       {/* Mobile Top Navbar */}
-      <header className="md:hidden w-full flex items-center justify-between px-6 py-4 bg-slate-900/80 backdrop-blur-md border-b border-white/5 sticky top-0 z-40">
+      <header className="md:hidden w-full flex items-center justify-between px-6 py-4 bg-white border-b-2 border-secondary sticky top-0 z-40">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-white shadow-[0_0_15px_rgba(99,102,241,0.5)]">
+          <div className="w-8 h-8 rounded-[8px_3px_8px_3px/3px_8px_3px_8px] bg-secondary flex items-center justify-center font-bold text-white shadow-[1px_2px_0px_rgba(0,0,0,15)]">
             S
           </div>
-          <span className="font-bold text-xl bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">
+          <span className="font-bold text-xl text-secondary font-sans tracking-wide">
             Savan
           </span>
         </Link>
         <button 
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="text-slate-300 hover:text-white transition-colors"
+          className="text-secondary hover:text-primary transition-colors cursor-pointer"
         >
           {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
@@ -77,8 +86,8 @@ export default function Navbar() {
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-x-0 top-[65px] bg-slate-950/95 backdrop-blur-lg border-b border-white/5 z-30 flex flex-col p-6 gap-4 animate-in slide-in-from-top-5 duration-200">
-          <nav className="flex flex-col gap-2">
+        <div className="md:hidden fixed inset-x-0 top-[65px] bg-white border-b-2 border-secondary z-30 flex flex-col p-6 gap-4 animate-in slide-in-from-top-5 duration-200">
+          <nav className="flex flex-col gap-2 font-sans">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
@@ -87,31 +96,31 @@ export default function Navbar() {
                   key={item.name}
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all border-2 border-transparent ${
                     isActive
-                      ? 'bg-indigo-600/20 border border-indigo-500/30 text-white font-medium shadow-[0_0_15px_rgba(99,102,241,0.1)]'
+                      ? 'bg-primary text-secondary border-secondary shadow-[2px_2px_0px_#263d5b] font-bold'
                       : item.highlight
-                      ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 hover:bg-emerald-500/20'
-                      : 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
+                      ? 'bg-secondary text-white border-secondary shadow-[2px_2px_0px_#263d5b]'
+                      : 'text-slate-700 hover:text-secondary hover:bg-slate-50 hover:border-secondary'
                   }`}
                 >
-                  <Icon size={18} className={isActive ? 'text-indigo-400' : item.highlight ? 'text-emerald-400' : ''} />
+                  <Icon size={18} className={isActive ? 'text-secondary' : item.highlight ? 'text-white' : 'text-slate-500'} />
                   <span>{item.name}</span>
                 </Link>
               );
             })}
           </nav>
           
-          <div className="border-t border-white/5 pt-4 flex items-center justify-between">
+          <div className="border-t-2 border-secondary pt-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center font-bold text-indigo-400 text-sm">
+              <div className="w-10 h-10 rounded-full bg-primary border-2 border-secondary flex items-center justify-center font-bold text-secondary text-sm">
                 {getInitials()}
               </div>
               <div className="text-left">
-                <p className="text-sm font-medium text-slate-200 truncate max-w-[150px]">
+                <p className="text-sm font-bold text-secondary truncate max-w-[150px]">
                   {profile?.full_name || 'User'}
                 </p>
-                <p className="text-xs text-slate-500 truncate max-w-[150px]">
+                <p className="text-xs text-slate-500 truncate max-w-[150px] font-mono">
                   {user?.email}
                 </p>
               </div>
@@ -121,7 +130,7 @@ export default function Navbar() {
                 setMobileMenuOpen(false);
                 handleLogout();
               }}
-              className="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all"
+              className="p-2 text-slate-600 hover:text-danger hover:bg-red-55 border border-transparent hover:border-secondary rounded-lg transition-all"
               title="Sign Out"
             >
               <LogOut size={18} />
@@ -131,25 +140,25 @@ export default function Navbar() {
       )}
 
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col w-64 min-h-screen bg-slate-950/70 border-r border-white/5 p-6 justify-between sticky top-0 h-screen">
+      <aside className="hidden md:flex flex-col w-64 min-h-screen bg-white border-r-2 border-secondary p-6 justify-between sticky top-0 h-screen">
         <div className="flex flex-col gap-8">
           {/* Logo */}
           <Link href="/dashboard" className="flex items-center gap-3 px-2">
-            <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center font-extrabold text-white shadow-[0_0_20px_rgba(99,102,241,0.6)]">
+            <div className="w-10 h-10 rounded-[10px_4px_10px_4px/4px_10px_4px_10px] bg-secondary flex items-center justify-center font-extrabold text-white shadow-[2px_3px_0px_rgba(0,0,0,0.25)]">
               S
             </div>
             <div className="flex flex-col">
-              <span className="font-bold text-xl leading-none bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">
+              <span className="font-bold text-xl leading-none text-secondary font-sans tracking-wide">
                 Savan
               </span>
-              <span className="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-semibold">
+              <span className="text-[10px] text-slate-500 mt-1.5 uppercase tracking-wider font-mono font-bold">
                 Daily Companion
               </span>
             </div>
           </Link>
 
           {/* Nav Items */}
-          <nav className="flex flex-col gap-2">
+          <nav className="flex flex-col gap-2 font-sans">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
@@ -157,25 +166,25 @@ export default function Navbar() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all border ${
+                  className={`flex items-center gap-3 px-4 py-3 rounded-[120px_10px_100px_10px/10px_100px_10px_120px] transition-all border-2 ${
                     isActive
-                      ? 'bg-indigo-600/10 border-indigo-500/20 text-white font-semibold shadow-[0_0_15px_rgba(99,102,241,0.05)]'
+                      ? 'bg-primary border-secondary text-secondary font-bold shadow-[2px_3px_0px_#263d5b]'
                       : item.highlight
-                      ? 'bg-emerald-500/5 border-emerald-500/10 text-emerald-300 hover:bg-emerald-500/15 hover:border-emerald-500/30'
-                      : 'text-slate-400 border-transparent hover:text-slate-200 hover:bg-white/5'
+                      ? 'bg-secondary border-secondary text-white hover:bg-secondary/95 hover:shadow-[2px_3px_0px_#263d5b] shadow-[1px_2px_0px_#263d5b]'
+                      : 'text-slate-600 border-transparent hover:text-secondary hover:border-secondary hover:bg-slate-50'
                   }`}
                 >
                   <Icon 
                     size={18} 
                     className={`transition-transform duration-300 ${
                       isActive 
-                        ? 'text-indigo-400 scale-110' 
+                        ? 'text-secondary scale-110' 
                         : item.highlight 
-                        ? 'text-emerald-400 group-hover:scale-110' 
-                        : 'text-slate-500'
+                        ? 'text-white group-hover:scale-110' 
+                        : 'text-slate-550'
                     }`} 
                   />
-                  <span>{item.name}</span>
+                  <span className="text-sm tracking-wide font-bold">{item.name}</span>
                 </Link>
               );
             })}
@@ -183,23 +192,23 @@ export default function Navbar() {
         </div>
 
         {/* Profile Card / Logout */}
-        <div className="glass-card p-4 border border-white/5 flex flex-col gap-3">
+        <div className="bg-white border-2 border-secondary p-4 rounded-[20px_6px_220px_10px/12px_200px_10px_240px] shadow-[3px_4px_0px_#263d5b] flex flex-col gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-bold text-white text-sm shadow-[0_0_15px_rgba(99,102,241,0.3)]">
+            <div className="w-10 h-10 rounded-[10px_3px_10px_3px/3px_10px_3px_10px] bg-primary border-2 border-secondary flex items-center justify-center font-bold text-secondary text-sm shadow-[1.5px_2px_0px_rgba(0,0,0,0.15)]">
               {getInitials()}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-slate-200 truncate">
+              <p className="text-sm font-bold text-secondary truncate">
                 {profile?.full_name || 'User'}
               </p>
-              <p className="text-xs text-slate-500 truncate">
+              <p className="text-xs text-slate-500 truncate font-mono">
                 {user?.email}
               </p>
             </div>
           </div>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-white/5 hover:bg-red-500/15 border border-white/5 hover:border-red-500/20 text-slate-400 hover:text-red-300 rounded-lg text-xs font-medium transition-all"
+            className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-white hover:bg-red-500 hover:text-white border-2 border-secondary text-slate-700 rounded-lg text-xs font-bold transition-all shadow-[2px_2.5px_0px_#263d5b] cursor-pointer"
           >
             <LogOut size={14} />
             <span>Sign Out</span>

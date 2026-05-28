@@ -8,24 +8,20 @@
   max-width: calc(100vw - 2rem);
   align-items: flex-end;
   justify-content: center;
-  pointer-events: none; /* Allows clicks to pass through the wide outer box */
+  pointer-events: none;
 }
 
 .dock-panel {
-  pointer-events: auto; /* Enable clicks on the dock itself */
+  pointer-events: auto;
   display: flex;
   align-items: flex-end;
   width: fit-content;
   gap: 0.75rem;
-  border-radius: 1.25rem;
-  background-color: rgba(15, 12, 22, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px 24px 14px 24px/24px 14px 24px 16px;
+  background-color: var(--surface);
+  border: 2.5px solid var(--secondary);
   padding: 0.5rem;
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.6),
-    0 0 40px rgba(99, 102, 241, 0.15);
+  box-shadow: 3px 4px 0px var(--secondary);
 }
 
 .dock-item {
@@ -33,18 +29,19 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0.85rem;
-  background-color: rgba(30, 27, 38, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px 6px 12px 6px/6px 12px 6px 14px;
+  background-color: var(--background);
+  border: 2px solid var(--secondary);
   cursor: pointer;
   outline: none;
-  transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+  transition: all 0.15s ease-in-out;
+  color: var(--secondary);
 }
 
 .dock-item:hover, .dock-item:focus-visible {
-  background-color: rgba(99, 102, 241, 0.18);
-  border-color: rgba(99, 102, 241, 0.35);
-  box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
+  background-color: var(--primary);
+  color: var(--secondary);
+  transform: translateY(-4px) rotate(-3deg);
 }
 
 .dock-icon {
@@ -60,28 +57,28 @@
   height: 40%;
   min-width: 18px;
   min-height: 18px;
-  transition: transform 0.2s;
+  transition: transform 0.15s;
 }
 
 .dock-item:hover .dock-icon svg {
-  transform: scale(1.1);
+  transform: scale(1.15);
 }
 
 .dock-label {
   position: absolute;
-  top: -2rem;
+  top: -2.5rem;
   left: 50%;
   transform: translateX(-50%);
   width: fit-content;
   white-space: pre;
-  border-radius: 0.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background-color: rgba(10, 8, 15, 0.95);
-  backdrop-filter: blur(10px);
-  padding: 0.3rem 0.7rem;
-  font-size: 0.65rem;
+  border-radius: 8px 4px 8px 4px/4px 8px 4px 8px;
+  border: 2px solid var(--secondary);
+  background-color: var(--secondary);
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  color: #fff;
+  font-family: var(--font-mono), monospace;
+  color: #ffffff;
   pointer-events: none;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.15);
 }

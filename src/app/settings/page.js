@@ -21,6 +21,7 @@ export default function Settings() {
 
   // Settings states
   const [fullName, setFullName] = useState('');
+  const [username, setUsername] = useState('');
   const [updatingProfile, setUpdatingProfile] = useState(false);
   const [notificationPermission, setNotificationPermission] = useState('default');
   const [wipingData, setWipingData] = useState(false);
@@ -34,14 +35,21 @@ export default function Settings() {
 
   // Load initial settings
   useEffect(() => {
-    if (profile?.full_name) {
+    if (user?.user_metadata?.full_name) {
+      setFullName(user.user_metadata.full_name);
+    } else if (profile?.full_name) {
       setFullName(profile.full_name);
     }
+    
+    if (user?.user_metadata?.username) {
+      setUsername(user.user_metadata.username);
+    }
+
     // Check browser notification permission
     if (typeof window !== 'undefined' && 'Notification' in window) {
       setNotificationPermission(Notification.permission);
     }
-  }, [profile]);
+  }, [user, profile]);
 
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
@@ -53,15 +61,18 @@ export default function Settings() {
     setUpdatingProfile(true);
 
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ full_name: fullName.trim(), updated_at: new Date() })
-        .eq('id', user.id);
+      const { data, error } = await supabase.auth.updateUser({
+        data: { 
+          full_name: fullName.trim(),
+          username: username.trim()
+        }
+      });
 
       if (error) throw error;
 
-      // Update state in context
-      setProfile(prev => ({ ...prev, full_name: fullName.trim() }));
+      // Force session refresh to get new metadata
+      await supabase.auth.refreshSession();
+      
       addNotification('Profile updated successfully!', 'success');
     } catch (err) {
       console.error(err);
@@ -181,6 +192,20 @@ export default function Settings() {
             </div>
 
             <form onSubmit={handleProfileUpdate} className="space-y-4 font-mono text-sm">
+              <div>
+                <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
+                  Username
+                </label>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="doodle-input w-full shadow-[1.5px_1.5px_0px_var(--secondary)] mb-4"
+                  placeholder="savan123"
+                  required
+                />
+              </div>
+
               <div>
                 <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
                   Full Name

@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { supabase } from './supabase';
 
 const AppContext = createContext();
@@ -45,7 +45,7 @@ export function AppProvider({ children }) {
   };
 
   // Fetch user profile details
-  const fetchProfile = async (userId) => {
+  const fetchProfile = useCallback(async (userId) => {
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -58,14 +58,12 @@ export function AppProvider({ children }) {
     } catch (err) {
       console.error('Error fetching profile:', err);
     }
-  };
+  }, []);
 
   // Fetch tasks for the current user
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
+    if (!user) return;
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) return;
-      
       const { data, error } = await supabase
         .from('tasks')
         .select('*')
@@ -78,14 +76,12 @@ export function AppProvider({ children }) {
     } catch (err) {
       console.error('Error fetching tasks:', err);
     }
-  };
+  }, [user]);
 
   // Fetch expenses for the current user
-  const fetchExpenses = async () => {
+  const fetchExpenses = useCallback(async () => {
+    if (!user) return;
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) return;
-
       const { data, error } = await supabase
         .from('expenses')
         .select('*')
@@ -97,14 +93,12 @@ export function AppProvider({ children }) {
     } catch (err) {
       console.error('Error fetching expenses:', err);
     }
-  };
+  }, [user]);
 
   // Fetch current week's budget
-  const fetchBudget = async () => {
+  const fetchBudget = useCallback(async () => {
+    if (!user) return;
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) return;
-
       const currentWeekStart = getWeekStartDate();
       const { data, error } = await supabase
         .from('weekly_budgets')
@@ -120,12 +114,12 @@ export function AppProvider({ children }) {
     } catch (err) {
       console.error('Error fetching budget:', err);
     }
-  };
+  }, [user]);
 
   // Refresh all dashboard data
-  const refreshAllData = async () => {
+  const refreshAllData = useCallback(async () => {
     await Promise.all([fetchTasks(), fetchExpenses(), fetchBudget()]);
-  };
+  }, [fetchTasks, fetchExpenses, fetchBudget]);
 
   useEffect(() => {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -205,7 +199,7 @@ export function AppProvider({ children }) {
   }, [user]);
 
   // Log notification to in-app notification stack
-  const addNotification = (message, type = 'info') => {
+  const addNotification = useCallback((message, type = 'info') => {
     const newNotif = {
       id: Math.random().toString(36).substring(2, 9),
       message,
@@ -214,9 +208,9 @@ export function AppProvider({ children }) {
     };
     setNotifications((prev) => [newNotif, ...prev].slice(0, 50));
     return newNotif;
-  };
+  }, []);
 
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     try {
       if (typeof document !== 'undefined') {
         document.cookie = 'savan-session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax';
@@ -230,7 +224,7 @@ export function AppProvider({ children }) {
     } catch (err) {
       console.error('Error signing out of Supabase:', err);
     }
-  };
+  }, []);
 
 
   return (

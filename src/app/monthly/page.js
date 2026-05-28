@@ -32,6 +32,7 @@ export default function MonthlyHub() {
   const [monthlyReview, setMonthlyReview] = useState(null);
   const [loadingReview, setLoadingReview] = useState(false);
   const [fetchingDB, setFetchingDB] = useState(true);
+  const [hasAttempted, setHasAttempted] = useState(false);
 
   // Redirect if not logged in
   useEffect(() => {
@@ -97,10 +98,11 @@ export default function MonthlyHub() {
   }, [user]);
 
   useEffect(() => {
-    if (!fetchingDB && !monthlyReview && user && !loading) {
+    if (!fetchingDB && !monthlyReview && user && !loading && !hasAttempted) {
+      setHasAttempted(true);
       generateMonthlyAIReview();
     }
-  }, [fetchingDB, monthlyReview, user, loading]);
+  }, [fetchingDB, monthlyReview, user, loading, hasAttempted]);
 
   // Filter tasks & expenses for current month
   const currentMonthTasks = tasks.filter(t => t.task_date.startsWith(monthPrefix));

@@ -23,6 +23,7 @@ export default function AIReview() {
   const [review, setReview] = useState(null);
   const [loadingReview, setLoadingReview] = useState(false);
   const [fetchingDB, setFetchingDB] = useState(true);
+  const [hasAttempted, setHasAttempted] = useState(false);
 
   // Redirect if not logged in
   useEffect(() => {
@@ -61,10 +62,11 @@ export default function AIReview() {
   }, [user]);
 
   useEffect(() => {
-    if (!fetchingDB && !review && user && !loading) {
+    if (!fetchingDB && !review && user && !loading && !hasAttempted) {
+      setHasAttempted(true);
       generateAIReview();
     }
-  }, [fetchingDB, review, user, loading]);
+  }, [fetchingDB, review, user, loading, hasAttempted]);
 
   const generateAIReview = async () => {
     setLoadingReview(true);

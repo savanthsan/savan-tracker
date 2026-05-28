@@ -173,7 +173,7 @@ export default function Dashboard() {
           <h1 className="text-3xl md:text-4xl font-extrabold text-secondary tracking-tight font-sans">
             Hello,{' '}
             <span className="text-primary underline decoration-wavy decoration-secondary">
-              {profile?.full_name || 'User'}
+              {user?.user_metadata?.username || profile?.full_name || user?.user_metadata?.full_name || 'User'}
             </span>
             !
           </h1>

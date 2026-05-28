@@ -12,6 +12,7 @@ export default function Signup() {
   const { user } = useApp();
   
   const [fullName, setFullName] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -66,6 +67,7 @@ export default function Signup() {
         options: {
           data: {
             full_name: fullName,
+            username: username,
           },
         },
       });
@@ -175,6 +177,26 @@ export default function Signup() {
                       onChange={(e) => setFullName(e.target.value)}
                       className="doodle-input pl-10 w-full shadow-[1.5px_1.5px_0px_var(--secondary)]"
                       placeholder="John Doe"
+                      required
+                      disabled={!isEnvConfigured}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-1.5">
+                    Username
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-secondary">
+                      <User size={18} />
+                    </div>
+                    <input
+                      type="text"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      className="doodle-input pl-10 w-full shadow-[1.5px_1.5px_0px_var(--secondary)]"
+                      placeholder="savan123"
                       required
                       disabled={!isEnvConfigured}
                     />

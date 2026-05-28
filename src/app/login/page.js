@@ -52,7 +52,7 @@ export default function Login() {
       if (authError) {
         setError(authError.message);
       } else {
-        window.location.href = '/dashboard';
+        router.push('/dashboard');
       }
     } catch (err) {
       const errMsg = err?.message || err?.toString() || '';

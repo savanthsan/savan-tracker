@@ -145,7 +145,6 @@ export function AppProvider({ children }) {
 
       try {
         const { data: { session } } = await supabase.auth.getSession();
-        clearTimeout(timeoutId);
         if (session?.user) {
           setUser(session.user);
           await fetchProfile(session.user.id);

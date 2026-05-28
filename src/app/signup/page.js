@@ -75,7 +75,7 @@ export default function Signup() {
       } else {
         // Check if user session was created immediately (meaning email confirmation is off)
         if (data?.session) {
-          window.location.href = '/dashboard';
+          router.push('/dashboard');
         } else {
           setSuccess(true);
         }

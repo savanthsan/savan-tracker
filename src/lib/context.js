@@ -128,10 +128,30 @@ export function AppProvider({ children }) {
   };
 
   useEffect(() => {
-    // Check current session
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const isConfigured = 
+      supabaseUrl && 
+      !supabaseUrl.includes('placeholder-url') && 
+      supabaseAnonKey && 
+      supabaseAnonKey !== 'placeholder-key';
+
+    if (!isConfigured) {
+      console.warn('Supabase is not configured. Skipping session checks.');
+      setLoading(false);
+      return;
+    }
+
+    // Check current session with a 5s safety timeout
     const checkSession = async () => {
+      const timeoutId = setTimeout(() => {
+        console.warn('Session check timed out. Setting loading to false.');
+        setLoading(false);
+      }, 5000);
+
       try {
         const { data: { session } } = await supabase.auth.getSession();
+        clearTimeout(timeoutId);
         if (session?.user) {
           setUser(session.user);
           await fetchProfile(session.user.id);
@@ -139,31 +159,37 @@ export function AppProvider({ children }) {
       } catch (err) {
         console.error('Error getting session:', err);
       } finally {
+        clearTimeout(timeoutId);
         setLoading(false);
       }
     };
 
     checkSession();
 
-    // Listen for auth state changes
+    // Listen for auth state changes with robust try-catch protection
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session?.user) {
-        setUser(session.user);
-        await fetchProfile(session.user.id);
-        if (typeof document !== 'undefined') {
-          document.cookie = `savan-session=${session.access_token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
+      try {
+        if (session?.user) {
+          setUser(session.user);
+          await fetchProfile(session.user.id);
+          if (typeof document !== 'undefined') {
+            document.cookie = `savan-session=${session.access_token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
+          }
+        } else {
+          setUser(null);
+          setProfile(null);
+          setTasks([]);
+          setExpenses([]);
+          setWeeklyBudget(null);
+          if (typeof document !== 'undefined') {
+            document.cookie = `savan-session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax`;
+          }
         }
-      } else {
-        setUser(null);
-        setProfile(null);
-        setTasks([]);
-        setExpenses([]);
-        setWeeklyBudget(null);
-        if (typeof document !== 'undefined') {
-          document.cookie = `savan-session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax`;
-        }
+      } catch (err) {
+        console.error('Error in onAuthStateChange callback:', err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return () => {

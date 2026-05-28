@@ -20,7 +20,7 @@ export default function Login() {
   // If user is already authenticated, redirect to dashboard
   useEffect(() => {
     if (user) {
-      router.push('/dashboard');
+      window.location.href = '/dashboard';
     }
   }, [user, router]);
 

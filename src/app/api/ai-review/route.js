@@ -2,6 +2,9 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { supabase } from '@/lib/supabase';
 import { NextResponse } from 'next/server';
 
+// Module-level in-memory store for basic rate limiting across cold starts
+const rateLimitMap = new Map();
+
 export async function POST(req) {
   try {
     // 1. Authenticate user from request header (Authorization) or token
@@ -16,6 +19,27 @@ export async function POST(req) {
     
     if (userError || !user) {
       return NextResponse.json({ error: 'Invalid user token.' }, { status: 401 });
+    }
+
+    // Rate Limiting Logic (In-Memory per instance)
+    const now = Date.now();
+    const windowMs = 60 * 1000; // 1 minute window
+    const maxRequests = 3; // Max 3 requests per minute per user
+
+    if (!rateLimitMap.has(user.id)) {
+      rateLimitMap.set(user.id, { count: 1, resetTime: now + windowMs });
+    } else {
+      const rateData = rateLimitMap.get(user.id);
+      if (now > rateData.resetTime) {
+        // Reset window
+        rateLimitMap.set(user.id, { count: 1, resetTime: now + windowMs });
+      } else if (rateData.count >= maxRequests) {
+        return NextResponse.json({ 
+          error: 'Rate limit exceeded. Please wait a minute before requesting another AI review.' 
+        }, { status: 429, headers: { 'Retry-After': Math.ceil((rateData.resetTime - now) / 1000).toString() } });
+      } else {
+        rateData.count += 1;
+      }
     }
 
     // 2. Parse request payload

@@ -155,7 +155,7 @@ export default function Budget() {
             </p>
           </div>
 
-          <form onSubmit={handleBudgetSubmit} className="space-y-5 font-mono text-sm">
+          <form onSubmit={handleBudgetSubmit} noValidate className="space-y-5 font-mono text-sm">
             <div>
               <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-2.5">
                 Weekly Amount Limit ({currency}) <span className="text-danger ml-1">*</span>

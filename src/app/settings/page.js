@@ -282,7 +282,7 @@ export default function Settings() {
               <h2 className="text-lg font-bold text-secondary font-sans">Profile Details</h2>
             </div>
 
-            <form onSubmit={handleProfileUpdate} className="space-y-4 font-mono text-sm">
+            <form onSubmit={handleProfileUpdate} noValidate className="space-y-4 font-mono text-sm">
               <div>
                 <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
                   Username <span className="text-danger ml-1">*</span>
@@ -360,7 +360,7 @@ export default function Settings() {
               <h2 className="text-lg font-bold text-secondary font-sans">Security Settings</h2>
             </div>
 
-            <form onSubmit={handlePasswordUpdate} className="space-y-4 font-mono text-sm">
+            <form onSubmit={handlePasswordUpdate} noValidate className="space-y-4 font-mono text-sm">
               <div>
                 <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
                   Current Password <span className="text-danger ml-1">*</span>

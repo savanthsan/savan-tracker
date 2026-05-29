@@ -294,7 +294,7 @@ export default function MonthlyHub() {
             {monthlyBudgetInputError && (
               <span className="text-[11px] text-danger font-bold block mb-1.5">{monthlyBudgetInputError}</span>
             )}
-            <form onSubmit={handleSaveBudget} className="space-y-4 font-mono text-sm">
+            <form onSubmit={handleSaveBudget} noValidate className="space-y-4 font-mono text-sm">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-secondary font-bold text-sm">
                   {currency}

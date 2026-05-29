@@ -16,6 +16,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const [isEnvConfigured, setIsEnvConfigured] = useState(true);
 
   const validateEmail = (val) => {
@@ -59,12 +60,26 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (!email || !password) {
-      setError('Please fill in all fields.');
-      return;
+    
+    let hasError = false;
+
+    if (!email) {
+      setEmailError('This field is required.');
+      hasError = true;
+    } else if (!validateEmail(email)) {
+      hasError = true;
+    } else {
+      setEmailError('');
     }
 
-    if (!validateEmail(email)) {
+    if (!password) {
+      setPasswordError('This field is required.');
+      hasError = true;
+    } else {
+      setPasswordError('');
+    }
+
+    if (hasError) {
       return;
     }
 
@@ -140,10 +155,10 @@ export default function Login() {
             </div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-5 font-mono text-sm">
+          <form onSubmit={handleLogin} noValidate className="space-y-5 font-mono text-sm">
             <div>
               <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
-                Email Address
+                Email Address <span className="text-danger ml-1">*</span>
               </label>
               {emailError && (
                 <span className="text-[11px] text-danger font-bold block mb-1.5">{emailError}</span>
@@ -167,8 +182,11 @@ export default function Login() {
 
             <div>
               <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
-                Password
+                Password <span className="text-danger ml-1">*</span>
               </label>
+              {passwordError && (
+                <span className="text-[11px] text-danger font-bold block mb-1.5">{passwordError}</span>
+              )}
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-secondary">
                   <Lock size={18} />
@@ -176,8 +194,11 @@ export default function Login() {
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="doodle-input pl-10 pr-10 w-full shadow-[1.5px_1.5px_0px_var(--secondary)]"
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (passwordError) setPasswordError('');
+                  }}
+                  className={`doodle-input pl-10 pr-10 w-full shadow-[1.5px_1.5px_0px_var(--secondary)] ${passwordError ? '!border-danger !shadow-[1.5px_1.5px_0px_var(--danger)] text-danger' : ''}`}
                   placeholder="••••••••"
                   required
                   disabled={!isEnvConfigured}

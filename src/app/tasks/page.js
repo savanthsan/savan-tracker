@@ -261,7 +261,7 @@ export default function Tasks() {
             </h2>
           </div>
 
-          <form onSubmit={handleFormSubmit} className="space-y-4 font-mono text-sm">
+          <form onSubmit={handleFormSubmit} noValidate className="space-y-4 font-mono text-sm">
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
                 Task Title <span className="text-danger ml-1">*</span>

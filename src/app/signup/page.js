@@ -22,6 +22,10 @@ export default function Signup() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [emailError, setEmailError] = useState('');
+  const [fullNameError, setFullNameError] = useState('');
+  const [usernameError, setUsernameError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [success, setSuccess] = useState(false);
   const [isEnvConfigured, setIsEnvConfigured] = useState(true);
 
@@ -66,24 +70,45 @@ export default function Signup() {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    if (!fullName || !email || !password || !confirmPassword) {
-      setError('Please fill in all fields.');
-      return;
+
+    setFullNameError('');
+    setUsernameError('');
+    setEmailError('');
+    setPasswordError('');
+    setConfirmPasswordError('');
+    
+    let hasError = false;
+
+    if (!fullName) {
+      setFullNameError('This field is required.');
+      hasError = true;
+    }
+    if (!username) {
+      setUsernameError('This field is required.');
+      hasError = true;
+    }
+    if (!email) {
+      setEmailError('This field is required.');
+      hasError = true;
+    } else if (!validateEmail(email)) {
+      hasError = true;
+    }
+    if (!password) {
+      setPasswordError('This field is required.');
+      hasError = true;
+    } else if (password.length < 6) {
+      setPasswordError('Password must be at least 6 characters long.');
+      hasError = true;
+    }
+    if (!confirmPassword) {
+      setConfirmPasswordError('This field is required.');
+      hasError = true;
+    } else if (password !== confirmPassword) {
+      setConfirmPasswordError('Passwords do not match.');
+      hasError = true;
     }
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match.');
-      return;
-    }
-
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters long.');
-      return;
-    }
-
-    if (!validateEmail(email)) {
-      return;
-    }
+    if (hasError) return;
 
     setLoading(true);
     setError(null);
@@ -190,11 +215,14 @@ export default function Signup() {
                 </div>
               )}
 
-              <form onSubmit={handleSignup} className="space-y-4 font-mono text-sm">
+              <form onSubmit={handleSignup} noValidate className="space-y-4 font-mono text-sm">
                 <div>
                   <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-1.5">
-                    Full Name
+                    Full Name <span className="text-danger ml-1">*</span>
                   </label>
+                  {fullNameError && (
+                    <span className="text-[11px] text-danger font-bold block mb-1.5">{fullNameError}</span>
+                  )}
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-secondary">
                       <User size={18} />
@@ -202,8 +230,11 @@ export default function Signup() {
                     <input
                       type="text"
                       value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      className="doodle-input pl-10 w-full shadow-[1.5px_1.5px_0px_var(--secondary)]"
+                      onChange={(e) => {
+                        setFullName(e.target.value);
+                        if (fullNameError) setFullNameError('');
+                      }}
+                      className={`doodle-input pl-10 w-full shadow-[1.5px_1.5px_0px_var(--secondary)] ${fullNameError ? '!border-danger !shadow-[1.5px_1.5px_0px_var(--danger)] text-danger' : ''}`}
                       placeholder="John Doe"
                       required
                       disabled={!isEnvConfigured}
@@ -213,8 +244,11 @@ export default function Signup() {
 
                 <div>
                   <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-1.5">
-                    Username
+                    Username <span className="text-danger ml-1">*</span>
                   </label>
+                  {usernameError && (
+                    <span className="text-[11px] text-danger font-bold block mb-1.5">{usernameError}</span>
+                  )}
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-secondary">
                       <User size={18} />
@@ -222,8 +256,11 @@ export default function Signup() {
                     <input
                       type="text"
                       value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      className="doodle-input pl-10 w-full shadow-[1.5px_1.5px_0px_var(--secondary)]"
+                      onChange={(e) => {
+                        setUsername(e.target.value);
+                        if (usernameError) setUsernameError('');
+                      }}
+                      className={`doodle-input pl-10 w-full shadow-[1.5px_1.5px_0px_var(--secondary)] ${usernameError ? '!border-danger !shadow-[1.5px_1.5px_0px_var(--danger)] text-danger' : ''}`}
                       placeholder="savan123"
                       required
                       disabled={!isEnvConfigured}
@@ -233,7 +270,7 @@ export default function Signup() {
 
                 <div>
                   <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-1.5">
-                    Email Address
+                    Email Address <span className="text-danger ml-1">*</span>
                   </label>
                   {emailError && (
                     <span className="text-[11px] text-danger font-bold block mb-1.5">{emailError}</span>
@@ -257,8 +294,11 @@ export default function Signup() {
 
                 <div>
                   <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-1.5">
-                    Password
+                    Password <span className="text-danger ml-1">*</span>
                   </label>
+                  {passwordError && (
+                    <span className="text-[11px] text-danger font-bold block mb-1.5">{passwordError}</span>
+                  )}
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-secondary">
                       <Lock size={18} />
@@ -266,8 +306,11 @@ export default function Signup() {
                     <input
                       type={showPassword ? "text" : "password"}
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="doodle-input pl-10 pr-10 w-full shadow-[1.5px_1.5px_0px_var(--secondary)]"
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        if (passwordError) setPasswordError('');
+                      }}
+                      className={`doodle-input pl-10 pr-10 w-full shadow-[1.5px_1.5px_0px_var(--secondary)] ${passwordError ? '!border-danger !shadow-[1.5px_1.5px_0px_var(--danger)] text-danger' : ''}`}
                       placeholder="Min. 6 characters"
                       required
                       disabled={!isEnvConfigured}
@@ -284,8 +327,11 @@ export default function Signup() {
 
                 <div>
                   <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-1.5">
-                    Confirm Password
+                    Confirm Password <span className="text-danger ml-1">*</span>
                   </label>
+                  {confirmPasswordError && (
+                    <span className="text-[11px] text-danger font-bold block mb-1.5">{confirmPasswordError}</span>
+                  )}
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-secondary">
                       <Lock size={18} />
@@ -293,8 +339,11 @@ export default function Signup() {
                     <input
                       type={showConfirmPassword ? "text" : "password"}
                       value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="doodle-input pl-10 pr-10 w-full shadow-[1.5px_1.5px_0px_var(--secondary)]"
+                      onChange={(e) => {
+                        setConfirmPassword(e.target.value);
+                        if (confirmPasswordError) setConfirmPasswordError('');
+                      }}
+                      className={`doodle-input pl-10 pr-10 w-full shadow-[1.5px_1.5px_0px_var(--secondary)] ${confirmPasswordError ? '!border-danger !shadow-[1.5px_1.5px_0px_var(--danger)] text-danger' : ''}`}
                       placeholder="Repeat password"
                       required
                       disabled={!isEnvConfigured}

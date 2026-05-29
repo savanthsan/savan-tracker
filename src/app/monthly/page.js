@@ -27,6 +27,7 @@ export default function MonthlyHub() {
   // Monthly Budget local state
   const [monthlyBudgetInput, setMonthlyBudgetInput] = useState('');
   const [monthlyBudgetLimit, setMonthlyBudgetLimit] = useState(1000);
+  const [monthlyBudgetInputError, setMonthlyBudgetInputError] = useState('');
 
   // Review states
   const [monthlyReview, setMonthlyReview] = useState(null);
@@ -141,9 +142,11 @@ export default function MonthlyHub() {
 
   const handleSaveBudget = (e) => {
     e.preventDefault();
+    setMonthlyBudgetInputError('');
+
     const val = Number(monthlyBudgetInput);
-    if (!monthlyBudgetInput || val < 0) {
-      addNotification('Please enter a valid monthly budget limit.', 'error');
+    if (!monthlyBudgetInput || val <= 0) {
+      setMonthlyBudgetInputError('This field is required.');
       return;
     }
     setMonthlyBudgetLimit(val);
@@ -286,8 +289,11 @@ export default function MonthlyHub() {
           <div className="doodle-card p-6">
             <div className="flex items-center gap-2 mb-4 border-b-2 border-secondary pb-2">
               <TrendingUp size={18} className="text-primary" />
-              <h3 className="text-base font-bold text-secondary font-sans">Adjust Month Limit</h3>
+              <h3 className="text-base font-bold text-secondary font-sans">Adjust Month Limit <span className="text-danger ml-1">*</span></h3>
             </div>
+            {monthlyBudgetInputError && (
+              <span className="text-[11px] text-danger font-bold block mb-1.5">{monthlyBudgetInputError}</span>
+            )}
             <form onSubmit={handleSaveBudget} className="space-y-4 font-mono text-sm">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-secondary font-bold text-sm">
@@ -297,9 +303,12 @@ export default function MonthlyHub() {
                   type="number"
                   step="1"
                   value={monthlyBudgetInput}
-                  onChange={(e) => setMonthlyBudgetInput(e.target.value)}
+                  onChange={(e) => {
+                    setMonthlyBudgetInput(e.target.value);
+                    if (monthlyBudgetInputError) setMonthlyBudgetInputError('');
+                  }}
                   placeholder="1000"
-                  className="doodle-input pl-10 w-full font-bold shadow-[2px_2px_0px_var(--secondary)]"
+                  className={`doodle-input pl-10 w-full font-bold shadow-[2px_2px_0px_var(--secondary)] ${monthlyBudgetInputError ? '!border-danger !shadow-[2px_2px_0px_var(--danger)] text-danger' : ''}`}
                   required
                 />
               </div>

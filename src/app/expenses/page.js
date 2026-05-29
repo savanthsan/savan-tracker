@@ -36,6 +36,10 @@ export default function Expenses() {
   const [note, setNote] = useState('');
   const [expenseDate, setExpenseDate] = useState('');
   
+  // Validation Error States
+  const [amountError, setAmountError] = useState('');
+  const [expenseDateError, setExpenseDateError] = useState('');
+  
   // Edit states
   const [editingId, setEditingId] = useState(null);
   const [formLoading, setFormLoading] = useState(false);
@@ -83,10 +87,21 @@ export default function Expenses() {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    if (!amount || Number(amount) <= 0 || !expenseDate) {
-      addNotification('Amount (greater than 0) and Date are required.', 'error');
-      return;
+
+    setAmountError('');
+    setExpenseDateError('');
+    let hasError = false;
+
+    if (!amount || Number(amount) <= 0) {
+      setAmountError('This field is required.');
+      hasError = true;
     }
+    if (!expenseDate) {
+      setExpenseDateError('This field is required.');
+      hasError = true;
+    }
+
+    if (hasError) return;
 
     setFormLoading(true);
 
@@ -150,6 +165,8 @@ export default function Expenses() {
     setNote('');
     const today = new Date().toISOString().split('T')[0];
     setExpenseDate(today);
+    setAmountError('');
+    setExpenseDateError('');
   };
 
   const handleDeleteExpense = async (id, cost) => {
@@ -289,8 +306,11 @@ export default function Expenses() {
           <form onSubmit={handleFormSubmit} className="space-y-4 font-mono text-sm">
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                Amount ({currency}) *
+                Amount ({currency}) <span className="text-danger ml-1">*</span>
               </label>
+              {amountError && (
+                <span className="text-[11px] text-danger font-bold block mb-1.5">{amountError}</span>
+              )}
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-705">
                   <DollarSign size={16} />
@@ -299,9 +319,12 @@ export default function Expenses() {
                   type="number"
                   step="0.01"
                   value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
+                  onChange={(e) => {
+                    setAmount(e.target.value);
+                    if (amountError) setAmountError('');
+                  }}
                   placeholder="24.50"
-                  className="doodle-input pl-9 w-full shadow-[1.5px_2px_0px_#263D5B]"
+                  className={`doodle-input pl-9 w-full shadow-[1.5px_2px_0px_#263D5B] ${amountError ? '!border-danger !shadow-[1.5px_1.5px_0px_var(--danger)] text-danger' : ''}`}
                   required
                 />
               </div>
@@ -344,8 +367,11 @@ export default function Expenses() {
 
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                Expense Date *
+                Expense Date <span className="text-danger ml-1">*</span>
               </label>
+              {expenseDateError && (
+                <span className="text-[11px] text-danger font-bold block mb-1.5">{expenseDateError}</span>
+              )}
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-700">
                   <Calendar size={16} />
@@ -353,8 +379,11 @@ export default function Expenses() {
                 <input
                   type="date"
                   value={expenseDate}
-                  onChange={(e) => setExpenseDate(e.target.value)}
-                  className="doodle-input pl-9 w-full shadow-[1.5px_2px_0px_#263D5B]"
+                  onChange={(e) => {
+                    setExpenseDate(e.target.value);
+                    if (expenseDateError) setExpenseDateError('');
+                  }}
+                  className={`doodle-input pl-9 w-full shadow-[1.5px_2px_0px_#263D5B] ${expenseDateError ? '!border-danger !shadow-[1.5px_1.5px_0px_var(--danger)] text-danger' : ''}`}
                   required
                 />
               </div>

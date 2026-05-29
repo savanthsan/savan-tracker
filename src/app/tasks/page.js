@@ -41,6 +41,10 @@ export default function Tasks() {
   const [taskTime, setTaskTime] = useState('');
   const [priority, setPriority] = useState('medium');
   
+  // Validation Error States
+  const [titleError, setTitleError] = useState('');
+  const [taskDateError, setTaskDateError] = useState('');
+  
   // Edit states
   const [editingId, setEditingId] = useState(null);
   const [formLoading, setFormLoading] = useState(false);
@@ -62,10 +66,21 @@ export default function Tasks() {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    if (!title || !taskDate) {
-      addNotification('Title and Date are required.', 'error');
-      return;
+
+    setTitleError('');
+    setTaskDateError('');
+    let hasError = false;
+
+    if (!title) {
+      setTitleError('This field is required.');
+      hasError = true;
     }
+    if (!taskDate) {
+      setTaskDateError('This field is required.');
+      hasError = true;
+    }
+
+    if (hasError) return;
 
     setFormLoading(true);
 
@@ -162,6 +177,8 @@ export default function Tasks() {
     setTaskDate('');
     setTaskTime('');
     setPriority('medium');
+    setTitleError('');
+    setTaskDateError('');
   };
 
   const handleDeleteTask = async (id, name) => {
@@ -247,14 +264,20 @@ export default function Tasks() {
           <form onSubmit={handleFormSubmit} className="space-y-4 font-mono text-sm">
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                Task Title *
+                Task Title <span className="text-danger ml-1">*</span>
               </label>
+              {titleError && (
+                <span className="text-[11px] text-danger font-bold block mb-1.5">{titleError}</span>
+              )}
               <input
                 type="text"
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) => {
+                  setTitle(e.target.value);
+                  if (titleError) setTitleError('');
+                }}
                 placeholder="Study science chapters..."
-                className="doodle-input w-full shadow-[1.5px_2px_0px_#263D5B]"
+                className={`doodle-input w-full shadow-[1.5px_2px_0px_#263D5B] ${titleError ? '!border-danger !shadow-[1.5px_1.5px_0px_var(--danger)] text-danger' : ''}`}
                 required
               />
             </div>
@@ -275,13 +298,19 @@ export default function Tasks() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                  Date *
+                  Date <span className="text-danger ml-1">*</span>
                 </label>
+                {taskDateError && (
+                  <span className="text-[11px] text-danger font-bold block mb-1.5">{taskDateError}</span>
+                )}
                 <input
                   type="date"
                   value={taskDate}
-                  onChange={(e) => setTaskDate(e.target.value)}
-                  className="doodle-input w-full shadow-[1.5px_2px_0px_#263D5B]"
+                  onChange={(e) => {
+                    setTaskDate(e.target.value);
+                    if (taskDateError) setTaskDateError('');
+                  }}
+                  className={`doodle-input w-full shadow-[1.5px_2px_0px_#263D5B] ${taskDateError ? '!border-danger !shadow-[1.5px_1.5px_0px_var(--danger)] text-danger' : ''}`}
                   required
                 />
               </div>

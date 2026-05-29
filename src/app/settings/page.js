@@ -32,6 +32,13 @@ export default function Settings() {
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [updatingPassword, setUpdatingPassword] = useState(false);
 
+  // Validation Error States
+  const [fullNameError, setFullNameError] = useState('');
+  const [usernameError, setUsernameError] = useState('');
+  const [currentPasswordError, setCurrentPasswordError] = useState('');
+  const [newPasswordError, setNewPasswordError] = useState('');
+  const [confirmNewPasswordError, setConfirmNewPasswordError] = useState('');
+
   // Redirect if not logged in
   useEffect(() => {
     if (!loading && !user) {
@@ -59,10 +66,21 @@ export default function Settings() {
 
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
-    if (!fullName.trim()) {
-      addNotification('Name cannot be empty.', 'error');
-      return;
+
+    setFullNameError('');
+    setUsernameError('');
+    let hasError = false;
+
+    if (!username.trim()) {
+      setUsernameError('This field is required.');
+      hasError = true;
     }
+    if (!fullName.trim()) {
+      setFullNameError('This field is required.');
+      hasError = true;
+    }
+
+    if (hasError) return;
 
     setUpdatingProfile(true);
 
@@ -90,15 +108,33 @@ export default function Settings() {
 
   const handlePasswordUpdate = async (e) => {
     e.preventDefault();
-    if (!currentPassword || !newPassword || !confirmNewPassword) {
-      addNotification('Please fill in all password fields.', 'error');
-      return;
+
+    setCurrentPasswordError('');
+    setNewPasswordError('');
+    setConfirmNewPasswordError('');
+
+    let hasError = false;
+
+    if (!currentPassword) {
+      setCurrentPasswordError('This field is required.');
+      hasError = true;
+    }
+    if (!newPassword) {
+      setNewPasswordError('This field is required.');
+      hasError = true;
+    } else if (newPassword.length < 6) {
+      setNewPasswordError('New password must be at least 6 characters.');
+      hasError = true;
+    }
+    if (!confirmNewPassword) {
+      setConfirmNewPasswordError('This field is required.');
+      hasError = true;
+    } else if (newPassword !== confirmNewPassword) {
+      setConfirmNewPasswordError('New passwords do not match.');
+      hasError = true;
     }
 
-    if (newPassword !== confirmNewPassword) {
-      addNotification('New passwords do not match.', 'error');
-      return;
-    }
+    if (hasError) return;
 
     if (newPassword.length < 6) {
       addNotification('New password must be at least 6 characters.', 'error');
@@ -249,13 +285,19 @@ export default function Settings() {
             <form onSubmit={handleProfileUpdate} className="space-y-4 font-mono text-sm">
               <div>
                 <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
-                  Username
+                  Username <span className="text-danger ml-1">*</span>
                 </label>
+                {usernameError && (
+                  <span className="text-[11px] text-danger font-bold block mb-1.5">{usernameError}</span>
+                )}
                 <input
                   type="text"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="doodle-input w-full shadow-[1.5px_1.5px_0px_var(--secondary)] mb-4"
+                  onChange={(e) => {
+                    setUsername(e.target.value);
+                    if (usernameError) setUsernameError('');
+                  }}
+                  className={`doodle-input w-full shadow-[1.5px_1.5px_0px_var(--secondary)] mb-4 ${usernameError ? '!border-danger !shadow-[1.5px_1.5px_0px_var(--danger)] text-danger' : ''}`}
                   placeholder="savan123"
                   required
                 />
@@ -263,13 +305,19 @@ export default function Settings() {
 
               <div>
                 <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
-                  Full Name
+                  Full Name <span className="text-danger ml-1">*</span>
                 </label>
+                {fullNameError && (
+                  <span className="text-[11px] text-danger font-bold block mb-1.5">{fullNameError}</span>
+                )}
                 <input
                   type="text"
                   value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  className="doodle-input w-full shadow-[1.5px_1.5px_0px_var(--secondary)]"
+                  onChange={(e) => {
+                    setFullName(e.target.value);
+                    if (fullNameError) setFullNameError('');
+                  }}
+                  className={`doodle-input w-full shadow-[1.5px_1.5px_0px_var(--secondary)] ${fullNameError ? '!border-danger !shadow-[1.5px_1.5px_0px_var(--danger)] text-danger' : ''}`}
                   placeholder="John Doe"
                   required
                 />
@@ -315,13 +363,19 @@ export default function Settings() {
             <form onSubmit={handlePasswordUpdate} className="space-y-4 font-mono text-sm">
               <div>
                 <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
-                  Current Password
+                  Current Password <span className="text-danger ml-1">*</span>
                 </label>
+                {currentPasswordError && (
+                  <span className="text-[11px] text-danger font-bold block mb-1.5">{currentPasswordError}</span>
+                )}
                 <input
                   type="password"
                   value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  className="doodle-input w-full shadow-[1.5px_1.5px_0px_var(--secondary)] mb-4"
+                  onChange={(e) => {
+                    setCurrentPassword(e.target.value);
+                    if (currentPasswordError) setCurrentPasswordError('');
+                  }}
+                  className={`doodle-input w-full shadow-[1.5px_1.5px_0px_var(--secondary)] mb-4 ${currentPasswordError ? '!border-danger !shadow-[1.5px_1.5px_0px_var(--danger)] text-danger' : ''}`}
                   placeholder="Enter current password"
                   required
                 />
@@ -329,13 +383,19 @@ export default function Settings() {
 
               <div>
                 <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
-                  New Password
+                  New Password <span className="text-danger ml-1">*</span>
                 </label>
+                {newPasswordError && (
+                  <span className="text-[11px] text-danger font-bold block mb-1.5">{newPasswordError}</span>
+                )}
                 <input
                   type="password"
                   value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  className="doodle-input w-full shadow-[1.5px_1.5px_0px_var(--secondary)] mb-4"
+                  onChange={(e) => {
+                    setNewPassword(e.target.value);
+                    if (newPasswordError) setNewPasswordError('');
+                  }}
+                  className={`doodle-input w-full shadow-[1.5px_1.5px_0px_var(--secondary)] mb-4 ${newPasswordError ? '!border-danger !shadow-[1.5px_1.5px_0px_var(--danger)] text-danger' : ''}`}
                   placeholder="Min. 6 characters"
                   required
                 />
@@ -343,14 +403,20 @@ export default function Settings() {
 
               <div>
                 <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
-                  Confirm New Password
+                  Confirm New Password <span className="text-danger ml-1">*</span>
                 </label>
+                {confirmNewPasswordError && (
+                  <span className="text-[11px] text-danger font-bold block mb-1.5">{confirmNewPasswordError}</span>
+                )}
                 <input
                   type="password"
                   value={confirmNewPassword}
-                  onChange={(e) => setConfirmNewPassword(e.target.value)}
+                  onChange={(e) => {
+                    setConfirmNewPassword(e.target.value);
+                    if (confirmNewPasswordError) setConfirmNewPasswordError('');
+                  }}
                   onPaste={(e) => e.preventDefault()}
-                  className="doodle-input w-full shadow-[1.5px_1.5px_0px_var(--secondary)]"
+                  className={`doodle-input w-full shadow-[1.5px_1.5px_0px_var(--secondary)] ${confirmNewPasswordError ? '!border-danger !shadow-[1.5px_1.5px_0px_var(--danger)] text-danger' : ''}`}
                   placeholder="Repeat new password"
                   required
                 />

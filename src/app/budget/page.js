@@ -25,6 +25,7 @@ export default function Budget() {
   const [historicalBudgets, setHistoricalBudgets] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
+  const [amountError, setAmountError] = useState('');
 
   // Redirect if not logged in
   useEffect(() => {
@@ -67,8 +68,10 @@ export default function Budget() {
 
   const handleBudgetSubmit = async (e) => {
     e.preventDefault();
-    if (!amount || Number(amount) < 0) {
-      addNotification('Please enter a valid budget amount.', 'error');
+
+    setAmountError('');
+    if (!amount || Number(amount) <= 0) {
+      setAmountError('This field is required.');
       return;
     }
 
@@ -155,8 +158,11 @@ export default function Budget() {
           <form onSubmit={handleBudgetSubmit} className="space-y-5 font-mono text-sm">
             <div>
               <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-2.5">
-                Weekly Amount Limit ({currency})
+                Weekly Amount Limit ({currency}) <span className="text-danger ml-1">*</span>
               </label>
+              {amountError && (
+                <span className="text-[11px] text-danger font-bold block mb-1.5">{amountError}</span>
+              )}
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-secondary font-bold text-sm">
                   {currency}
@@ -165,9 +171,12 @@ export default function Budget() {
                   type="number"
                   step="0.01"
                   value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
+                  onChange={(e) => {
+                    setAmount(e.target.value);
+                    if (amountError) setAmountError('');
+                  }}
                   placeholder="300.00"
-                  className="doodle-input pl-10 w-full text-base font-bold shadow-[2px_2px_0px_var(--secondary)]"
+                  className={`doodle-input pl-10 w-full text-base font-bold shadow-[2px_2px_0px_var(--secondary)] ${amountError ? '!border-danger !shadow-[2px_2px_0px_var(--danger)] text-danger' : ''}`}
                   required
                 />
               </div>

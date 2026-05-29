@@ -26,6 +26,12 @@ export default function Settings() {
   const [notificationPermission, setNotificationPermission] = useState('default');
   const [wipingData, setWipingData] = useState(false);
 
+  // Password update states
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [updatingPassword, setUpdatingPassword] = useState(false);
+
   // Redirect if not logged in
   useEffect(() => {
     if (!loading && !user) {
@@ -79,6 +85,55 @@ export default function Settings() {
       addNotification(err.message || 'Error updating profile.', 'error');
     } finally {
       setUpdatingProfile(false);
+    }
+  };
+
+  const handlePasswordUpdate = async (e) => {
+    e.preventDefault();
+    if (!currentPassword || !newPassword || !confirmNewPassword) {
+      addNotification('Please fill in all password fields.', 'error');
+      return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      addNotification('New passwords do not match.', 'error');
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      addNotification('New password must be at least 6 characters.', 'error');
+      return;
+    }
+
+    setUpdatingPassword(true);
+
+    try {
+      // Re-authenticate to verify current password
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: currentPassword
+      });
+
+      if (signInError) {
+        throw new Error('Incorrect current password.');
+      }
+
+      // Update to new password
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+
+      if (error) throw error;
+      
+      addNotification('Password updated successfully!', 'success');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmNewPassword('');
+    } catch (err) {
+      console.error(err);
+      addNotification(err.message || 'Error updating password.', 'error');
+    } finally {
+      setUpdatingPassword(false);
     }
   };
 
@@ -245,6 +300,74 @@ export default function Settings() {
                   <div className="w-4 h-4 border-2 border-secondary border-t-transparent rounded-full animate-spin" />
                 ) : (
                   'Update Profile'
+                )}
+              </button>
+            </form>
+          </div>
+
+          {/* Change Password Card */}
+          <div className="doodle-card p-6">
+            <div className="flex items-center gap-2.5 text-primary mb-6 border-b-2 border-secondary pb-2">
+              <ShieldAlert size={18} className="text-secondary" />
+              <h2 className="text-lg font-bold text-secondary font-sans">Security Settings</h2>
+            </div>
+
+            <form onSubmit={handlePasswordUpdate} className="space-y-4 font-mono text-sm">
+              <div>
+                <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
+                  Current Password
+                </label>
+                <input
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  className="doodle-input w-full shadow-[1.5px_1.5px_0px_var(--secondary)] mb-4"
+                  placeholder="Enter current password"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
+                  New Password
+                </label>
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="doodle-input w-full shadow-[1.5px_1.5px_0px_var(--secondary)] mb-4"
+                  placeholder="Min. 6 characters"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
+                  Confirm New Password
+                </label>
+                <input
+                  type="password"
+                  value={confirmNewPassword}
+                  onChange={(e) => setConfirmNewPassword(e.target.value)}
+                  onPaste={(e) => e.preventDefault()}
+                  className="doodle-input w-full shadow-[1.5px_1.5px_0px_var(--secondary)]"
+                  placeholder="Repeat new password"
+                  required
+                />
+                <span className="text-[10px] text-slate-500 mt-1.5 block">
+                  Pasting is disabled for security reasons.
+                </span>
+              </div>
+
+              <button
+                type="submit"
+                disabled={updatingPassword}
+                className="doodle-btn py-3 px-5 text-xs font-bold transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer mt-2"
+              >
+                {updatingPassword ? (
+                  <div className="w-4 h-4 border-2 border-secondary border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  'Change Password'
                 )}
               </button>
             </form>

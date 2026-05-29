@@ -18,7 +18,7 @@ export function middleware(request) {
   ];
 
   const isProtected = protectedPaths.some(path => pathname.startsWith(path));
-  const isAuthPage = pathname === '/login' || pathname === '/signup';
+
 
   if (isProtected && !hasSession) {
     const url = request.nextUrl.clone();
@@ -26,11 +26,7 @@ export function middleware(request) {
     return NextResponse.redirect(url);
   }
 
-  if (isAuthPage && hasSession) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/dashboard';
-    return NextResponse.redirect(url);
-  }
+
 
   return NextResponse.next();
 }

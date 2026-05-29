@@ -45,12 +45,13 @@ export function AppProvider({ children }) {
   };
 
   // Fetch user profile details
-  const fetchProfile = useCallback(async (userId) => {
+  const fetchProfile = useCallback(async () => {
+    if (!user) return;
     try {
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', userId)
+        .eq('id', user.id)
         .single();
       if (!error && data) {
         setProfile(data);
@@ -58,7 +59,7 @@ export function AppProvider({ children }) {
     } catch (err) {
       console.error('Error fetching profile:', err);
     }
-  }, []);
+  }, [user]);
 
   // Fetch tasks for the current user
   const fetchTasks = useCallback(async () => {
@@ -118,8 +119,8 @@ export function AppProvider({ children }) {
 
   // Refresh all dashboard data
   const refreshAllData = useCallback(async () => {
-    await Promise.all([fetchTasks(), fetchExpenses(), fetchBudget()]);
-  }, [fetchTasks, fetchExpenses, fetchBudget]);
+    await Promise.all([fetchProfile(), fetchTasks(), fetchExpenses(), fetchBudget()]);
+  }, [fetchProfile, fetchTasks, fetchExpenses, fetchBudget]);
 
   useEffect(() => {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -145,9 +146,9 @@ export function AppProvider({ children }) {
 
       try {
         const { data: { session } } = await supabase.auth.getSession();
+        clearTimeout(timeoutId);
         if (session?.user) {
           setUser(session.user);
-          await fetchProfile(session.user.id);
         }
       } catch (err) {
         console.error('Error getting session:', err);
@@ -164,7 +165,6 @@ export function AppProvider({ children }) {
       try {
         if (session?.user) {
           setUser(session.user);
-          await fetchProfile(session.user.id);
           if (typeof document !== 'undefined') {
             document.cookie = `savan-session=${session.access_token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
           }

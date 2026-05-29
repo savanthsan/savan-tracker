@@ -21,8 +21,32 @@ export default function Signup() {
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [emailError, setEmailError] = useState('');
   const [success, setSuccess] = useState(false);
   const [isEnvConfigured, setIsEnvConfigured] = useState(true);
+
+  const validateEmail = (val) => {
+    if (!val) {
+      setEmailError('');
+      return true;
+    }
+    if (!val.includes('@')) {
+      setEmailError('Email must include an "@" symbol.');
+      return false;
+    }
+    if (!val.includes('.')) {
+      setEmailError('Email must include a domain (e.g., .com).');
+      return false;
+    }
+    setEmailError('');
+    return true;
+  };
+
+  const handleEmailChange = (e) => {
+    const val = e.target.value;
+    setEmail(val);
+    if (emailError) validateEmail(val);
+  };
 
   // If user is already authenticated, redirect to dashboard
   useEffect(() => {
@@ -54,6 +78,10 @@ export default function Signup() {
 
     if (password.length < 6) {
       setError('Password must be at least 6 characters long.');
+      return;
+    }
+
+    if (!validateEmail(email)) {
       return;
     }
 
@@ -207,6 +235,9 @@ export default function Signup() {
                   <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-1.5">
                     Email Address
                   </label>
+                  {emailError && (
+                    <span className="text-[11px] text-danger font-bold block mb-1.5">{emailError}</span>
+                  )}
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-secondary">
                       <Mail size={18} />
@@ -214,8 +245,9 @@ export default function Signup() {
                     <input
                       type="email"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="doodle-input pl-10 w-full shadow-[1.5px_1.5px_0px_var(--secondary)]"
+                      onChange={handleEmailChange}
+                      onBlur={(e) => validateEmail(e.target.value)}
+                      className={`doodle-input pl-10 w-full shadow-[1.5px_1.5px_0px_var(--secondary)] ${emailError ? '!border-danger !shadow-[1.5px_1.5px_0px_var(--danger)] text-danger' : ''}`}
                       placeholder="name@example.com"
                       required
                       disabled={!isEnvConfigured}

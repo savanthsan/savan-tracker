@@ -386,23 +386,25 @@ export default function MonthlyHub() {
             <form onSubmit={handleCategoryBudgetSubmit} className="flex flex-col gap-3 mb-5 items-start">
               <div className="w-full">
                 <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Category</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-secondary z-10">
-                    <Tag size={14} />
+                <div className="flex flex-col gap-2">
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-secondary z-10">
+                      <Tag size={14} />
+                    </div>
+                    <select
+                      value={catCategory}
+                      onChange={(e) => { setCatCategory(e.target.value); setCatError(''); }}
+                      className="doodle-input pl-10 w-full text-sm font-bold shadow-[1.5px_1.5px_0px_var(--secondary)] py-2 appearance-none bg-white cursor-pointer relative z-0"
+                    >
+                      <option value="" disabled>Select category...</option>
+                      {uniqueCategories.map(cat => (
+                        <option key={cat} value={cat}>{cat.charAt(0).toUpperCase() + cat.slice(1)}</option>
+                      ))}
+                      <option value="custom">➕ Add Custom Category...</option>
+                    </select>
                   </div>
-                  <select
-                    value={catCategory}
-                    onChange={(e) => { setCatCategory(e.target.value); setCatError(''); }}
-                    className="doodle-input pl-10 w-full text-sm font-bold shadow-[1.5px_1.5px_0px_var(--secondary)] py-2 appearance-none bg-white cursor-pointer relative z-0"
-                  >
-                    <option value="" disabled>Select category...</option>
-                    {uniqueCategories.map(cat => (
-                      <option key={cat} value={cat}>{cat.charAt(0).toUpperCase() + cat.slice(1)}</option>
-                    ))}
-                    <option value="custom">➕ Add Custom Category...</option>
-                  </select>
                   {catCategory === 'custom' && (
-                    <div className="mt-2 relative">
+                    <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-secondary">
                         <Tag size={14} />
                       </div>

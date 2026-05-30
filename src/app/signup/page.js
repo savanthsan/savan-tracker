@@ -118,6 +118,7 @@ export default function Signup() {
         email,
         password,
         options: {
+          emailRedirectTo: 'https://savan-tracker-1.onrender.com/auth/callback',
           data: {
             full_name: fullName,
             username: username,

@@ -41,6 +41,7 @@ export default function Budget() {
   // Set initial input value if budget already exists
   // Form states for Category Budgets
   const [catCategory, setCatCategory] = useState('');
+  const [customCatName, setCustomCatName] = useState('');
   const [catAmount, setCatAmount] = useState('');
   const [catError, setCatError] = useState('');
   const [catLoading, setCatLoading] = useState(false);
@@ -141,7 +142,7 @@ export default function Budget() {
       return;
     }
     
-    const catName = catCategory.trim().toLowerCase();
+    const catName = (catCategory === 'custom' ? customCatName : catCategory).trim().toLowerCase();
     if (!catName || !catAmount || Number(catAmount) <= 0) {
       setCatError('Both category name and a valid amount are required.');
       return;
@@ -165,6 +166,7 @@ export default function Budget() {
       addNotification(`Limit of ${currency}${catAmount} set for "${catName}"!`, 'success');
       
       setCatCategory('');
+      setCustomCatName('');
       setCatAmount('');
     } catch (err) {
       console.error(err);
@@ -303,19 +305,32 @@ export default function Budget() {
                     <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-secondary">
                       <Tag size={14} />
                     </div>
-                    <input
-                      type="text"
-                      list="budget-categories"
+                    <select
                       value={catCategory}
                       onChange={(e) => { setCatCategory(e.target.value); setCatError(''); }}
-                      placeholder="e.g. food"
-                      className="doodle-input pl-8 w-full text-sm font-bold shadow-[1.5px_1.5px_0px_var(--secondary)] py-2"
-                    />
-                    <datalist id="budget-categories">
+                      className="doodle-input pl-8 w-full text-sm font-bold shadow-[1.5px_1.5px_0px_var(--secondary)] py-2 appearance-none bg-white cursor-pointer"
+                    >
+                      <option value="" disabled>Select category...</option>
                       {uniqueCategories.map(cat => (
-                        <option key={cat} value={cat} />
+                        <option key={cat} value={cat}>{cat.charAt(0).toUpperCase() + cat.slice(1)}</option>
                       ))}
-                    </datalist>
+                      <option value="custom">➕ Add Custom Category...</option>
+                    </select>
+                    {catCategory === 'custom' && (
+                      <div className="absolute top-full left-0 right-0 mt-2 z-10 relative">
+                        <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-secondary">
+                          <Tag size={14} />
+                        </div>
+                        <input
+                          type="text"
+                          value={customCatName}
+                          onChange={(e) => { setCustomCatName(e.target.value); setCatError(''); }}
+                          placeholder="Type custom category..."
+                          className="doodle-input pl-8 w-full text-sm font-bold shadow-[1.5px_1.5px_0px_var(--secondary)] py-2 bg-white"
+                          autoFocus
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="w-full sm:w-32">

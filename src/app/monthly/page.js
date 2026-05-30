@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/lib/context';
+import { getUniqueCategoryNames } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
 import confetti from 'canvas-confetti';
 import { 
@@ -16,7 +17,10 @@ import {
   BarChart3, 
   Activity, 
   Info,
-  DollarSign
+  DollarSign,
+  PieChart,
+  Tag,
+  Plus
 } from 'lucide-react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from 'recharts';
 
@@ -28,6 +32,13 @@ export default function MonthlyHub() {
   const [monthlyBudgetInput, setMonthlyBudgetInput] = useState('');
   const [monthlyBudgetLimit, setMonthlyBudgetLimit] = useState(1000);
   const [monthlyBudgetInputError, setMonthlyBudgetInputError] = useState('');
+
+  // Monthly Category Budgets state
+  const [monthlyCategoryLimits, setMonthlyCategoryLimits] = useState({});
+  const [catCategory, setCatCategory] = useState('');
+  const [customCatName, setCustomCatName] = useState('');
+  const [catAmount, setCatAmount] = useState('');
+  const [catError, setCatError] = useState('');
 
   // Review states
   const [monthlyReview, setMonthlyReview] = useState(null);
@@ -42,7 +53,7 @@ export default function MonthlyHub() {
     }
   }, [user, loading, router]);
 
-  // Load custom monthly budget from localStorage
+  // Load custom monthly budget and category limits from localStorage
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('savan_monthly_budget');
@@ -54,8 +65,24 @@ export default function MonthlyHub() {
         setMonthlyBudgetLimit(fallback);
         setMonthlyBudgetInput(fallback.toString());
       }
+
+      const savedCats = localStorage.getItem('savan_monthly_category_limits');
+      if (savedCats) {
+        try {
+          setMonthlyCategoryLimits(JSON.parse(savedCats));
+        } catch(e) {}
+      }
     }
   }, [weeklyBudget]);
+
+  const uniqueCategories = useMemo(() => {
+    // default categories are hardcoded or fetched, here we use standard defaults
+    const defaults = [
+      { id: 'food' }, { id: 'travel' }, { id: 'shopping' }, 
+      { id: 'study' }, { id: 'bills' }, { id: 'entertainment' }, { id: 'other' }
+    ];
+    return getUniqueCategoryNames(expenses, weeklyBudget, defaults);
+  }, [expenses, weeklyBudget]);
 
   // Get current calendar month key (YYYY-MM-01) & description
   const getMonthKeys = () => {
@@ -158,6 +185,34 @@ export default function MonthlyHub() {
       origin: { y: 0.8 },
       colors: ['#3b82f6', '#8b5cf6']
     });
+  };
+
+  const handleCategoryBudgetSubmit = (e) => {
+    e.preventDefault();
+    setCatError('');
+    
+    const catName = (catCategory === 'custom' ? customCatName : catCategory).trim().toLowerCase();
+    if (!catName || !catAmount || Number(catAmount) <= 0) {
+      setCatError('Both category name and a valid amount are required.');
+      return;
+    }
+
+    const newLimits = { ...monthlyCategoryLimits, [catName]: Number(catAmount) };
+    setMonthlyCategoryLimits(newLimits);
+    localStorage.setItem('savan_monthly_category_limits', JSON.stringify(newLimits));
+    addNotification(`Monthly limit of ${currency}${catAmount} set for "${catName}"!`, 'success');
+    
+    setCatCategory('');
+    setCustomCatName('');
+    setCatAmount('');
+  };
+
+  const removeCategoryLimit = (catName) => {
+    const newLimits = { ...monthlyCategoryLimits };
+    delete newLimits[catName];
+    setMonthlyCategoryLimits(newLimits);
+    localStorage.setItem('savan_monthly_category_limits', JSON.stringify(newLimits));
+    addNotification(`Removed limit for "${catName}".`, 'info');
   };
 
   const generateMonthlyAIReview = async () => {
@@ -319,6 +374,102 @@ export default function MonthlyHub() {
                 Set Monthly Budget Limit
               </button>
             </form>
+          </div>
+
+          {/* Monthly Category Budgets */}
+          <div className="doodle-card p-6">
+            <div className="flex items-center gap-2 mb-4 border-b-2 border-secondary pb-2">
+              <PieChart size={18} className="text-primary" />
+              <h3 className="text-base font-bold text-secondary font-sans">Category Spending Limits</h3>
+            </div>
+            
+            <form onSubmit={handleCategoryBudgetSubmit} className="flex flex-col gap-3 mb-5 items-start">
+              <div className="w-full">
+                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Category</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-secondary z-10">
+                    <Tag size={14} />
+                  </div>
+                  <select
+                    value={catCategory}
+                    onChange={(e) => { setCatCategory(e.target.value); setCatError(''); }}
+                    className="doodle-input pl-8 w-full text-sm font-bold shadow-[1.5px_1.5px_0px_var(--secondary)] py-2 appearance-none bg-white cursor-pointer relative z-0"
+                  >
+                    <option value="" disabled>Select category...</option>
+                    {uniqueCategories.map(cat => (
+                      <option key={cat} value={cat}>{cat.charAt(0).toUpperCase() + cat.slice(1)}</option>
+                    ))}
+                    <option value="custom">➕ Add Custom Category...</option>
+                  </select>
+                  {catCategory === 'custom' && (
+                    <div className="mt-2 relative">
+                      <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-secondary">
+                        <Tag size={14} />
+                      </div>
+                      <input
+                        type="text"
+                        value={customCatName}
+                        onChange={(e) => { setCustomCatName(e.target.value); setCatError(''); }}
+                        placeholder="Type custom category..."
+                        className="doodle-input pl-8 w-full text-sm font-bold shadow-[1.5px_1.5px_0px_var(--secondary)] py-2 bg-white"
+                        autoFocus
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              <div className="flex w-full gap-3 items-end">
+                <div className="flex-1">
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Limit</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-secondary text-xs">
+                      {currency}
+                    </div>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={catAmount}
+                      onChange={(e) => { setCatAmount(e.target.value); setCatError(''); }}
+                      placeholder="100"
+                      className="doodle-input pl-6 w-full text-sm font-bold shadow-[1.5px_1.5px_0px_var(--secondary)] py-2"
+                    />
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  className="doodle-btn py-2 px-4 text-xs font-bold shrink-0 h-[38px]"
+                >
+                  Set
+                </button>
+              </div>
+            </form>
+            
+            {catError && <p className="text-danger text-xs font-bold mb-4 font-mono">{catError}</p>}
+
+            <div className="space-y-3 font-mono">
+              {!monthlyCategoryLimits || Object.keys(monthlyCategoryLimits).length === 0 ? (
+                <p className="text-xs text-slate-500 italic">No specific monthly category limits set.</p>
+              ) : (
+                Object.entries(monthlyCategoryLimits).map(([cat, limit]) => (
+                  <div key={cat} className="flex items-center justify-between bg-slate-50 border-2 border-secondary p-3 rounded-xl shadow-[1.5px_1.5px_0px_var(--secondary)]">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-primary border border-secondary" />
+                      <span className="text-sm font-bold text-slate-800 capitalize">{cat}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm font-bold text-secondary">{currency}{Number(limit).toFixed(2)}</span>
+                      <button 
+                        onClick={() => removeCategoryLimit(cat)}
+                        className="text-[10px] text-danger hover:underline hover:text-red-700 font-bold"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
 
           {/* Monthly Task Completion Status */}

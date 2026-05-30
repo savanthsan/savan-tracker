@@ -26,6 +26,13 @@ export function getUniqueCategoryNames(expenses = [], weeklyBudget = null, defau
     Object.keys(weeklyBudget.category_limits).forEach(cat => catSet.add(cat.toLowerCase()));
   }
   
+  if (typeof window !== 'undefined') {
+    try {
+      const monthlyLimits = JSON.parse(localStorage.getItem('savan_monthly_category_limits') || '{}');
+      Object.keys(monthlyLimits).forEach(cat => catSet.add(cat.toLowerCase()));
+    } catch(e) {}
+  }
+  
   // 3. Past Expenses
   if (expenses && expenses.length > 0) {
     expenses.forEach(e => {

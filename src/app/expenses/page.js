@@ -36,6 +36,7 @@ export default function Expenses() {
   // Form states
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('food');
+  const [customCategory, setCustomCategory] = useState('');
   const [note, setNote] = useState('');
   const [expenseDate, setExpenseDate] = useState('');
   
@@ -132,9 +133,10 @@ export default function Expenses() {
     setFormLoading(true);
 
     try {
+      const finalCategory = (category === 'custom' ? customCategory : category).trim().toLowerCase() || 'other';
       const expenseData = {
         amount: Number(amount),
-        category: category.trim().toLowerCase() || 'other',
+        category: finalCategory,
         note: note.trim() || null,
         expense_date: expenseDate,
         user_id: user.id
@@ -188,6 +190,7 @@ export default function Expenses() {
       // Reset
       setAmount('');
       setCategory('food');
+      setCustomCategory('');
       setNote('');
       const today = new Date().toISOString().split('T')[0];
       setExpenseDate(today);
@@ -385,20 +388,33 @@ export default function Expenses() {
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
                 Category
               </label>
-              <input
-                type="text"
-                list="expense-categories"
+              <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                placeholder="e.g. food"
-                className="doodle-input w-full bg-white text-secondary shadow-[1.5px_2px_0px_#263D5B]"
+                className="doodle-input w-full bg-white text-secondary shadow-[1.5px_2px_0px_#263D5B] appearance-none cursor-pointer"
                 required
-              />
-              <datalist id="expense-categories">
+              >
+                <option value="" disabled>Select category...</option>
                 {uniqueCategories.map((cat) => (
-                  <option key={cat} value={cat} />
+                  <option key={cat} value={cat}>
+                    {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                  </option>
                 ))}
-              </datalist>
+                <option value="custom">➕ Add Custom Category...</option>
+              </select>
+              {category === 'custom' && (
+                <div className="mt-3 relative">
+                  <input
+                    type="text"
+                    value={customCategory}
+                    onChange={(e) => setCustomCategory(e.target.value)}
+                    placeholder="Type custom category..."
+                    className="doodle-input pl-3 w-full bg-white text-secondary shadow-[1.5px_2px_0px_#263D5B]"
+                    autoFocus
+                    required
+                  />
+                </div>
+              )}
             </div>
 
             <div>

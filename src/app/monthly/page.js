@@ -393,7 +393,7 @@ export default function MonthlyHub() {
                   <select
                     value={catCategory}
                     onChange={(e) => { setCatCategory(e.target.value); setCatError(''); }}
-                    className="doodle-input pl-8 w-full text-sm font-bold shadow-[1.5px_1.5px_0px_var(--secondary)] py-2 appearance-none bg-white cursor-pointer relative z-0"
+                    className="doodle-input pl-10 w-full text-sm font-bold shadow-[1.5px_1.5px_0px_var(--secondary)] py-2 appearance-none bg-white cursor-pointer relative z-0"
                   >
                     <option value="" disabled>Select category...</option>
                     {uniqueCategories.map(cat => (
@@ -411,7 +411,7 @@ export default function MonthlyHub() {
                         value={customCatName}
                         onChange={(e) => { setCustomCatName(e.target.value); setCatError(''); }}
                         placeholder="Type custom category..."
-                        className="doodle-input pl-8 w-full text-sm font-bold shadow-[1.5px_1.5px_0px_var(--secondary)] py-2 bg-white"
+                        className="doodle-input pl-10 w-full text-sm font-bold shadow-[1.5px_1.5px_0px_var(--secondary)] py-2 bg-white"
                         autoFocus
                       />
                     </div>
@@ -432,7 +432,7 @@ export default function MonthlyHub() {
                       value={catAmount}
                       onChange={(e) => { setCatAmount(e.target.value); setCatError(''); }}
                       placeholder="100"
-                      className="doodle-input pl-6 w-full text-sm font-bold shadow-[1.5px_1.5px_0px_var(--secondary)] py-2"
+                      className="doodle-input pl-9 w-full text-sm font-bold shadow-[1.5px_1.5px_0px_var(--secondary)] py-2"
                     />
                   </div>
                 </div>

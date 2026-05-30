@@ -1,6 +1,6 @@
 import DashboardClient from './DashboardClient';
 import { createServerSupabaseClient } from '@/lib/supabase-server';
-import { getWeekStartDate } from '@/lib/context';
+import { getWeekStartDate } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
 

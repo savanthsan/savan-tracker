@@ -12,11 +12,14 @@ export async function createServerSupabaseClient() {
     throw new Error('Supabase URL or Key is missing');
   }
 
+  const headers = {};
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
   const supabase = createClient(supabaseUrl, supabaseKey, {
     global: {
-      headers: {
-        Authorization: token ? `Bearer ${token}` : undefined,
-      },
+      headers,
     },
   });
 

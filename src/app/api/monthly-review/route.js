@@ -1,6 +1,17 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { supabase } from '@/lib/supabase';
 import { NextResponse } from 'next/server';
+import { Redis } from '@upstash/redis';
+
+// Module-level in-memory store for basic rate limiting across cold starts
+const rateLimitMap = new Map();
+
+const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+  ? new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+    })
+  : null;
 
 export async function POST(req) {
   try {
@@ -15,6 +26,41 @@ export async function POST(req) {
     
     if (userError || !user) {
       return NextResponse.json({ error: 'Invalid user token.' }, { status: 401 });
+    }
+
+    // Rate Limiting Logic
+    const maxRequests = 3; // Max 3 requests per minute per user
+    const windowMs = 60 * 1000; // 1 minute window
+
+    if (redis) {
+      const key = `ratelimit_monthly_review_${user.id}`;
+      const count = await redis.incr(key);
+      if (count === 1) {
+        await redis.expire(key, 60);
+      }
+      if (count > maxRequests) {
+        return NextResponse.json({ 
+          error: 'Rate limit exceeded. Please wait a minute before requesting another AI review.' 
+        }, { status: 429, headers: { 'Retry-After': '60' } });
+      }
+    } else {
+      // In-Memory Fallback
+      const now = Date.now();
+      if (!rateLimitMap.has(user.id)) {
+        rateLimitMap.set(user.id, { count: 1, resetTime: now + windowMs });
+      } else {
+        const rateData = rateLimitMap.get(user.id);
+        if (now > rateData.resetTime) {
+          // Reset window
+          rateLimitMap.set(user.id, { count: 1, resetTime: now + windowMs });
+        } else if (rateData.count >= maxRequests) {
+          return NextResponse.json({ 
+            error: 'Rate limit exceeded. Please wait a minute before requesting another AI review.' 
+          }, { status: 429, headers: { 'Retry-After': Math.ceil((rateData.resetTime - now) / 1000).toString() } });
+        } else {
+          rateData.count += 1;
+        }
+      }
     }
 
     // 2. Parse request payload

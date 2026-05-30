@@ -18,14 +18,21 @@ export const getWeekStartDate = (date = new Date()) => {
   return `${yyyy}-${mm}-${dd}`;
 };
 
-export function AppProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
+export const AppProvider = ({ 
+  children,
+  initialTasks = [],
+  initialExpenses = [],
+  initialWeeklyBudget = null,
+  initialProfile = null,
+  initialUser = null,
+}) => {
+  const [user, setUser] = useState(initialUser);
+  const [profile, setProfile] = useState(initialProfile);
+  const [loading, setLoading] = useState(!initialUser); // If we have a user from server, not loading
   
-  const [tasks, setTasks] = useState([]);
-  const [expenses, setExpenses] = useState([]);
-  const [weeklyBudget, setWeeklyBudget] = useState(null);
+  const [tasks, setTasks] = useState(initialTasks);
+  const [expenses, setExpenses] = useState(initialExpenses);
+  const [weeklyBudget, setWeeklyBudget] = useState(initialWeeklyBudget);
   const [notifications, setNotifications] = useState([]);
   const [currency, setCurrencyState] = useState(() => {
     if (typeof window !== 'undefined') {

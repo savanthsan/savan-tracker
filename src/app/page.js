@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useApp } from '@/lib/context';
+import Footer from '@/components/Footer';
 import { 
   CalendarRange, 
   Wallet, 
@@ -180,9 +181,7 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="text-center text-xs text-slate-600 mt-12 border-t-2 border-secondary pt-6 max-w-6xl mx-auto w-full z-10 font-mono">
-        <p>&copy; {new Date().getFullYear()} Savan AI Companion. No payments, no hassle. Built for high performance.</p>
-      </footer>
+      <Footer />
     </div>
   );
 }

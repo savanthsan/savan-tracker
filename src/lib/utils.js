@@ -10,3 +10,28 @@ export const getWeekStartDate = (date = new Date()) => {
   const dd = String(monday.getDate()).padStart(2, '0');
   return `${yyyy}-${mm}-${dd}`;
 };
+
+/**
+ * Generates a unique list of category names based on defaults, existing expenses, and active budgets.
+ * Always returns lowercase IDs.
+ */
+export function getUniqueCategoryNames(expenses = [], weeklyBudget = null, defaultCategories = []) {
+  const catSet = new Set();
+  
+  // 1. Defaults
+  defaultCategories.forEach(cat => catSet.add(cat.id.toLowerCase()));
+  
+  // 2. Budget Limits
+  if (weeklyBudget && weeklyBudget.category_limits) {
+    Object.keys(weeklyBudget.category_limits).forEach(cat => catSet.add(cat.toLowerCase()));
+  }
+  
+  // 3. Past Expenses
+  if (expenses && expenses.length > 0) {
+    expenses.forEach(e => {
+      if (e.category) catSet.add(e.category.toLowerCase());
+    });
+  }
+  
+  return Array.from(catSet).sort();
+}

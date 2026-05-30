@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useApp, getWeekStartDate } from '@/lib/context';
+import { getUniqueCategoryNames } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
 import confetti from 'canvas-confetti';
 import { 
@@ -21,7 +22,7 @@ import Link from 'next/link';
 
 export default function Budget() {
   const router = useRouter();
-  const { user, loading, weeklyBudget, setWeeklyBudget, addNotification, currency } = useApp();
+  const { user, loading, weeklyBudget, setWeeklyBudget, addNotification, currency, expenses } = useApp();
 
   // State controls
   const [amount, setAmount] = useState('');
@@ -49,6 +50,15 @@ export default function Budget() {
       setAmount(weeklyBudget.amount);
     }
   }, [weeklyBudget]);
+
+  // Dynamic Categories for Autocomplete
+  const defaultCategories = [
+    { id: 'food' }, { id: 'travel' }, { id: 'shopping' }, 
+    { id: 'study' }, { id: 'bills' }, { id: 'entertainment' }, { id: 'other' }
+  ];
+  const uniqueCategories = useMemo(() => {
+    return getUniqueCategoryNames(expenses, weeklyBudget, defaultCategories);
+  }, [expenses, weeklyBudget]);
 
   const fetchHistory = async () => {
     if (!user) return;
@@ -295,11 +305,17 @@ export default function Budget() {
                     </div>
                     <input
                       type="text"
+                      list="budget-categories"
                       value={catCategory}
                       onChange={(e) => { setCatCategory(e.target.value); setCatError(''); }}
                       placeholder="e.g. food"
                       className="doodle-input pl-8 w-full text-sm font-bold shadow-[1.5px_1.5px_0px_var(--secondary)] py-2"
                     />
+                    <datalist id="budget-categories">
+                      {uniqueCategories.map(cat => (
+                        <option key={cat} value={cat} />
+                      ))}
+                    </datalist>
                   </div>
                 </div>
                 <div className="w-full sm:w-32">

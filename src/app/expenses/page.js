@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useApp, getWeekStartDate } from '@/lib/context';
+import { getUniqueCategoryNames } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
 import { 
   TrendingUp, 
@@ -67,6 +68,11 @@ export default function Expenses() {
     return categories.find(c => c.id === catId) || categories[6];
   };
 
+  // Generate a dynamic list of ALL categories (default + previously logged + budgets)
+  const uniqueCategories = useMemo(() => {
+    return getUniqueCategoryNames(expenses, weeklyBudget, categories);
+  }, [expenses, weeklyBudget]);
+
   // Filter calculations: This Week's Expenses
   const currentWeekStartStr = getWeekStartDate();
   
@@ -128,7 +134,7 @@ export default function Expenses() {
     try {
       const expenseData = {
         amount: Number(amount),
-        category,
+        category: category.trim().toLowerCase() || 'other',
         note: note.trim() || null,
         expense_date: expenseDate,
         user_id: user.id
@@ -379,17 +385,20 @@ export default function Expenses() {
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
                 Category
               </label>
-              <select
+              <input
+                type="text"
+                list="expense-categories"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
+                placeholder="e.g. food"
                 className="doodle-input w-full bg-white text-secondary shadow-[1.5px_2px_0px_#263D5B]"
-              >
-                {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id} className="bg-white text-secondary font-mono">
-                    {cat.name}
-                  </option>
+                required
+              />
+              <datalist id="expense-categories">
+                {uniqueCategories.map((cat) => (
+                  <option key={cat} value={cat} />
                 ))}
-              </select>
+              </datalist>
             </div>
 
             <div>

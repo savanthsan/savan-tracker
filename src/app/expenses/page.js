@@ -15,9 +15,11 @@ import {
   FolderOpen,
   Calendar,
   Sparkles,
-  Link as LinkIcon
+  Link as LinkIcon,
+  PieChart
 } from 'lucide-react';
 import Link from 'next/link';
+import { ExpensePieChart } from '@/components/Charts';
 
 export default function Expenses() {
   const router = useRouter();
@@ -77,13 +79,31 @@ export default function Expenses() {
   const remainingBudget = budgetAmount - totalSpentThisWeek;
   const budgetPercentage = budgetAmount > 0 ? (totalSpentThisWeek / budgetAmount) * 100 : 0;
 
-  // Category wise calculation for progress bars
-  const categoryTotals = categories.map(cat => {
-    const total = expenses
-      .filter(e => e.category === cat.id)
-      .reduce((sum, item) => sum + Number(item.amount), 0);
-    return { ...cat, total };
-  }).filter(c => c.total > 0).sort((a, b) => b.total - a.total);
+  // Dynamic Category wise calculation
+  const categoryTotalsMap = {};
+  expenses.forEach(e => {
+    const amt = Number(e.amount);
+    if (amt > 0) {
+      if (!categoryTotalsMap[e.category]) {
+        categoryTotalsMap[e.category] = 0;
+      }
+      categoryTotalsMap[e.category] += amt;
+    }
+  });
+
+  const categoryTotals = Object.keys(categoryTotalsMap).map(catId => {
+    let catMeta = categories.find(c => c.id === catId);
+    if (!catMeta) {
+      // Dynamic fallback for custom categories
+      catMeta = {
+        id: catId,
+        name: catId.charAt(0).toUpperCase() + catId.slice(1),
+        color: 'bg-slate-105 text-slate-700 border-slate-350',
+        fill: '#4b5563'
+      };
+    }
+    return { ...catMeta, total: categoryTotalsMap[catId] };
+  }).sort((a, b) => b.total - a.total);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -421,41 +441,52 @@ export default function Expenses() {
 
         {/* Right: Lists & Categories */}
         <div className="lg:col-span-8 space-y-8">
-          {/* Category Breakdown list */}
-          <div className="bg-white border-2 border-secondary p-6 rounded-2xl shadow-[4px_4px_0px_#263D5B]">
-            <h3 className="text-lg font-bold text-secondary mb-6 font-sans border-b-2 border-secondary pb-2">Category Breakdown</h3>
+          {/* Category Breakdown list & Chart */}
+          <div className="bg-white border-2 border-secondary p-6 rounded-[20px_10px_220px_12px/14px_200px_12px_250px] shadow-[3px_4px_0px_#263D5B]">
+            <div className="flex items-center gap-2 mb-6 border-b-2 border-secondary pb-3">
+              <PieChart size={18} className="text-secondary" />
+              <h3 className="text-lg font-bold text-secondary font-sans">Category Breakdown</h3>
+            </div>
             {categoryTotals.length === 0 ? (
               <p className="text-sm text-slate-600 text-center py-4 font-mono">No categories recorded. Log an expense above!</p>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 font-mono">
-                {categoryTotals.map((cat) => {
-                  const totalAll = expenses.reduce((sum, item) => sum + Number(item.amount), 0);
-                  const sharePercentage = totalAll > 0 ? (cat.total / totalAll) * 100 : 0;
-                  
-                  return (
-                    <div key={cat.id} className="space-y-2">
-                      <div className="flex justify-between items-center text-xs font-bold">
-                        <span className="text-slate-800 flex items-center gap-2">
-                          <span className="w-3 h-3 rounded-full border border-secondary" style={{ backgroundColor: cat.fill }} />
-                          {cat.name}
-                        </span>
-                        <span className="text-secondary">
-                          {currency}{cat.total.toFixed(2)}{' '}
-                          <span className="text-[10px] text-slate-505 font-normal">({sharePercentage.toFixed(0)}%)</span>
-                        </span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center font-mono">
+                {/* Pie Chart Section */}
+                <div className="flex justify-center items-center h-full">
+                  <ExpensePieChart data={categoryTotals} currency={currency} />
+                </div>
+                
+                {/* List Section */}
+                <div className="space-y-4">
+                  {categoryTotals.map((cat) => {
+                    const totalAll = categoryTotals.reduce((sum, item) => sum + item.total, 0);
+                    const sharePercentage = totalAll > 0 ? (cat.total / totalAll) * 100 : 0;
+                    
+                    return (
+                      <div key={cat.id} className="space-y-2">
+                        <div className="flex justify-between items-center text-xs font-bold">
+                          <span className="text-slate-800 flex items-center gap-2">
+                            <span className="w-3 h-3 rounded-full border border-secondary" style={{ backgroundColor: cat.fill }} />
+                            {cat.name}
+                          </span>
+                          <span className="text-secondary">
+                            {currency}{cat.total.toFixed(2)}{' '}
+                            <span className="text-[10px] text-slate-505 font-normal">({sharePercentage.toFixed(0)}%)</span>
+                          </span>
+                        </div>
+                        <div className="w-full h-2.5 bg-slate-50 border-2 border-secondary rounded-full overflow-hidden">
+                          <div 
+                            className="h-full rounded-full border-r-2 border-secondary transition-all duration-500"
+                            style={{ 
+                              width: `${sharePercentage}%`,
+                              backgroundColor: cat.fill 
+                            }}
+                          />
+                        </div>
                       </div>
-                      <div className="w-full h-2.5 bg-slate-50 border-2 border-secondary rounded-full overflow-hidden">
-                        <div 
-                          className="h-full rounded-full border-r-2 border-secondary"
-                          style={{ 
-                            width: `${sharePercentage}%`,
-                            backgroundColor: cat.fill 
-                          }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             )}
           </div>

@@ -146,3 +146,78 @@ export function TaskPieChart({ completedCount, pendingCount, missedCount }) {
     </div>
   );
 }
+
+// Expense Pie Chart Component
+export function ExpensePieChart({ data, currency = '$' }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="h-64 w-full flex items-center justify-center text-slate-600 text-xs font-mono">
+        Preparing expense chart...
+      </div>
+    );
+  }
+
+  // Filter out zero totals
+  const chartData = data.filter(item => item.total > 0).map(item => ({
+    name: item.name,
+    value: item.total,
+    color: item.fill
+  }));
+
+  if (chartData.length === 0) {
+    return (
+      <div className="h-64 w-full flex flex-col items-center justify-center text-slate-500 text-sm gap-2 font-mono border-2 border-secondary rounded-[15px_4px_12px_4px/4px_12px_4px_15px] bg-slate-50/50 shadow-[2px_2px_0px_var(--secondary)]">
+        <span>No expenses recorded yet.</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="h-64 w-full relative flex items-center justify-center">
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart>
+          <Pie
+            data={chartData}
+            cx="50%"
+            cy="45%"
+            innerRadius={60}
+            outerRadius={80}
+            paddingAngle={3}
+            dataKey="value"
+            stroke="var(--secondary)"
+            strokeWidth={1.5}
+          >
+            {chartData.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={entry.color} />
+            ))}
+          </Pie>
+          <Tooltip 
+            formatter={(value) => `${currency}${Number(value).toFixed(2)}`}
+            contentStyle={{ 
+              backgroundColor: '#ffffff', 
+              border: '2px solid var(--secondary)', 
+              borderRadius: '8px', 
+              color: 'var(--foreground)',
+              fontFamily: 'var(--font-mono)',
+              boxShadow: '3px 3px 0px var(--secondary)'
+            }}
+          />
+          <Legend 
+            verticalAlign="bottom" 
+            height={36} 
+            iconType="circle"
+            formatter={(value, entry) => {
+              return <span className="text-[10px] text-secondary font-bold font-mono truncate">{value}</span>;
+            }}
+          />
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}

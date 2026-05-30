@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useApp, getWeekStartDate } from '@/lib/context';
 import { supabase } from '@/lib/supabase';
@@ -47,7 +47,7 @@ export default function Dashboard() {
   const [aiSnippet, setAiSnippet] = useState(null);
   const [loadingAi, setLoadingAi] = useState(true);
 
-  const dockItems = [
+  const dockItems = useMemo(() => [
     { icon: <LayoutDashboard size={18} />, label: 'Dashboard', onClick: () => router.push('/dashboard') },
     { icon: <Calendar size={18} />, label: 'Tasks Planner', onClick: () => router.push('/tasks') },
     { icon: <Wallet size={18} />, label: 'Expense Log', onClick: () => router.push('/expenses') },
@@ -56,7 +56,7 @@ export default function Dashboard() {
     { icon: <Sparkles size={18} />, label: 'AI Review', onClick: () => router.push('/ai-review') },
     { icon: <History size={18} />, label: 'History Log', onClick: () => router.push('/history') },
     { icon: <Settings size={18} />, label: 'Settings', onClick: () => router.push('/settings') },
-  ];
+  ], [router]);
 
   // Redirect if not logged in
   useEffect(() => {
@@ -65,8 +65,8 @@ export default function Dashboard() {
     }
   }, [user, loading, router]);
 
-  const todayStr = new Date().toISOString().split('T')[0];
-  const currentWeekStart = getWeekStartDate();
+  const todayStr = useMemo(() => new Date().toISOString().split('T')[0], []);
+  const currentWeekStart = useMemo(() => getWeekStartDate(), []);
 
   // Load latest AI advice snippet
   useEffect(() => {
@@ -92,20 +92,20 @@ export default function Dashboard() {
   }, [user, currentWeekStart]);
 
   // Calculations for task statistics
-  const completedTasksCount = tasks.filter(t => t.is_completed).length;
-  const pendingTasksCount = tasks.filter(t => !t.is_completed && t.task_date >= todayStr).length;
-  const missedTasksCount = tasks.filter(t => !t.is_completed && t.task_date < todayStr).length;
+  const completedTasksCount = useMemo(() => tasks.filter(t => t.is_completed).length, [tasks]);
+  const pendingTasksCount = useMemo(() => tasks.filter(t => !t.is_completed && t.task_date >= todayStr).length, [tasks, todayStr]);
+  const missedTasksCount = useMemo(() => tasks.filter(t => !t.is_completed && t.task_date < todayStr).length, [tasks, todayStr]);
 
-  const todayPendingTasks = tasks.filter(t => !t.is_completed && t.task_date === todayStr);
+  const todayPendingTasks = useMemo(() => tasks.filter(t => !t.is_completed && t.task_date === todayStr), [tasks, todayStr]);
 
   // Calculations for financial stats
-  const budgetAmount = weeklyBudget ? Number(weeklyBudget.amount) : 0;
-  const thisWeeksExpenses = expenses.filter(e => e.expense_date >= currentWeekStart);
-  const totalSpentThisWeek = thisWeeksExpenses.reduce((sum, item) => sum + Number(item.amount), 0);
-  const remainingBudget = budgetAmount - totalSpentThisWeek;
+  const budgetAmount = useMemo(() => weeklyBudget ? Number(weeklyBudget.amount) : 0, [weeklyBudget]);
+  const thisWeeksExpenses = useMemo(() => expenses.filter(e => e.expense_date >= currentWeekStart), [expenses, currentWeekStart]);
+  const totalSpentThisWeek = useMemo(() => thisWeeksExpenses.reduce((sum, item) => sum + Number(item.amount), 0), [thisWeeksExpenses]);
+  const remainingBudget = useMemo(() => budgetAmount - totalSpentThisWeek, [budgetAmount, totalSpentThisWeek]);
 
   // Process data for daily spending chart
-  const getDailySpendingChartData = () => {
+  const chartData = useMemo(() => {
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const data = [];
     
@@ -126,9 +126,7 @@ export default function Dashboard() {
       });
     }
     return data;
-  };
-
-  const chartData = getDailySpendingChartData();
+  }, [expenses]);
 
   const handleToggleComplete = async (task) => {
     try {

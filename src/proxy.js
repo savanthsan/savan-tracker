@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-export function middleware(request) {
+export function proxy(request) {
   const sessionCookie = request.cookies.get('savan-session');
   const hasSession = !!sessionCookie?.value;
   const { pathname } = request.nextUrl;

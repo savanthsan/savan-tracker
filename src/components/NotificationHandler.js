@@ -8,32 +8,48 @@ export default function NotificationHandler() {
   const { tasks, addNotification, notifications } = useApp();
   const [activeToasts, setActiveToasts] = useState([]);
   const notifiedTasksRef = useRef(new Set());
+  const timeoutsRef = useRef(new Map());
+  const tasksRef = useRef(tasks);
+
+  // Keep tasksRef synced
+  useEffect(() => {
+    tasksRef.current = tasks;
+  }, [tasks]);
+
+  // Clean up all toasts on unmount
+  useEffect(() => {
+    return () => {
+      timeoutsRef.current.forEach(clearTimeout);
+    };
+  }, []);
 
   // Handle toast timers
   useEffect(() => {
-    // Whenever a new notification is added, we trigger a toast alert
-    if (notifications.length > 0) {
-      const latest = notifications[0];
-      // Only add if not already in active toasts
-      if (!activeToasts.some(t => t.id === latest.id)) {
-        setActiveToasts(prev => [latest, ...prev].slice(0, 5)); // show max 5 at a time
-        
-        // Auto remove toast after 6 seconds
-        setTimeout(() => {
-          setActiveToasts(prev => prev.filter(t => t.id !== latest.id));
-        }, 6000);
-      }
-    }
+    if (notifications.length === 0) return;
+    
+    const latest = notifications[0];
+    setActiveToasts(prev => {
+      if (prev.some(t => t.id === latest.id)) return prev;
+      
+      const timer = setTimeout(() => {
+        setActiveToasts(p => p.filter(t => t.id !== latest.id));
+        timeoutsRef.current.delete(latest.id);
+      }, 6000);
+      timeoutsRef.current.set(latest.id, timer);
+      
+      return [latest, ...prev].slice(0, 5);
+    });
   }, [notifications]);
 
   // Check upcoming tasks
   useEffect(() => {
     const checkUpcomingTasks = () => {
-      if (!tasks || tasks.length === 0) return;
+      const currentTasks = tasksRef.current;
+      if (!currentTasks || currentTasks.length === 0) return;
 
       const now = new Date();
       
-      tasks.forEach(task => {
+      currentTasks.forEach(task => {
         if (task.is_completed) return;
         if (notifiedTasksRef.current.has(task.id)) return;
 
@@ -90,7 +106,7 @@ export default function NotificationHandler() {
     const interval = setInterval(checkUpcomingTasks, 30000);
 
     return () => clearInterval(interval);
-  }, [tasks, addNotification]);
+  }, [addNotification]);
 
   const removeToast = (id) => {
     setActiveToasts(prev => prev.filter(t => t.id !== id));

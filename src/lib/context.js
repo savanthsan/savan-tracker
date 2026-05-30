@@ -27,15 +27,12 @@ export function AppProvider({ children }) {
   const [expenses, setExpenses] = useState([]);
   const [weeklyBudget, setWeeklyBudget] = useState(null);
   const [notifications, setNotifications] = useState([]);
-  const [currency, setCurrencyState] = useState('$');
-
-  // Load currency setting from localStorage on mount
-  useEffect(() => {
+  const [currency, setCurrencyState] = useState(() => {
     if (typeof window !== 'undefined') {
-      const savedCurrency = localStorage.getItem('savan_currency') || '$';
-      setCurrencyState(savedCurrency);
+      return localStorage.getItem('savan_currency') || '$';
     }
-  }, []);
+    return '$';
+  });
 
   const setCurrency = (symbol) => {
     setCurrencyState(symbol);
@@ -69,7 +66,8 @@ export function AppProvider({ children }) {
         .from('tasks')
         .select('*')
         .order('task_date', { ascending: true })
-        .order('task_time', { ascending: true });
+        .order('task_time', { ascending: true })
+        .limit(200);
         
       if (!error && data) {
         setTasks(data);
@@ -86,7 +84,8 @@ export function AppProvider({ children }) {
       const { data, error } = await supabase
         .from('expenses')
         .select('*')
-        .order('expense_date', { ascending: false });
+        .order('expense_date', { ascending: false })
+        .limit(200);
         
       if (!error && data) {
         setExpenses(data);
@@ -137,28 +136,7 @@ export function AppProvider({ children }) {
       return;
     }
 
-    // Check current session with a 5s safety timeout
-    const checkSession = async () => {
-      const timeoutId = setTimeout(() => {
-        console.warn('Session check timed out. Setting loading to false.');
-        setLoading(false);
-      }, 5000);
-
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        clearTimeout(timeoutId);
-        if (session?.user) {
-          setUser(session.user);
-        }
-      } catch (err) {
-        console.error('Error getting session:', err);
-      } finally {
-        clearTimeout(timeoutId);
-        setLoading(false);
-      }
-    };
-
-    checkSession();
+    // checkSession removed: onAuthStateChange fires immediately on mount, preventing double-renders
 
     // Listen for auth state changes with robust try-catch protection
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -190,12 +168,11 @@ export function AppProvider({ children }) {
     };
   }, []);
 
-  // Fetch database entries when user session becomes active
   useEffect(() => {
     if (user) {
       refreshAllData();
     }
-  }, [user]);
+  }, [user, refreshAllData]);
 
   // Log notification to in-app notification stack
   const addNotification = useCallback((message, type = 'info') => {

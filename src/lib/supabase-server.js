@@ -1,8 +1,8 @@
 import { cookies } from 'next/headers';
 import { createClient } from '@supabase/supabase-js';
 
-export function createServerSupabaseClient() {
-  const cookieStore = cookies();
+export async function createServerSupabaseClient() {
+  const cookieStore = await cookies();
   const token = cookieStore.get('savan-session')?.value;
   
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;

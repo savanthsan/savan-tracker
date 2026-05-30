@@ -13,8 +13,11 @@ import {
   Sparkles,
   History,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  PieChart,
+  Tag
 } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Budget() {
   const router = useRouter();
@@ -35,6 +38,12 @@ export default function Budget() {
   }, [user, loading, router]);
 
   // Set initial input value if budget already exists
+  // Form states for Category Budgets
+  const [catCategory, setCatCategory] = useState('');
+  const [catAmount, setCatAmount] = useState('');
+  const [catError, setCatError] = useState('');
+  const [catLoading, setCatLoading] = useState(false);
+
   useEffect(() => {
     if (weeklyBudget) {
       setAmount(weeklyBudget.amount);
@@ -110,6 +119,71 @@ export default function Budget() {
       addNotification(err.message || 'Error setting budget.', 'error');
     } finally {
       setFormLoading(false);
+    }
+  };
+
+  const handleCategoryBudgetSubmit = async (e) => {
+    e.preventDefault();
+    setCatError('');
+    
+    if (!weeklyBudget) {
+      setCatError('Set a weekly budget first before adding category limits.');
+      return;
+    }
+    
+    const catName = catCategory.trim().toLowerCase();
+    if (!catName || !catAmount || Number(catAmount) <= 0) {
+      setCatError('Both category name and a valid amount are required.');
+      return;
+    }
+
+    setCatLoading(true);
+    try {
+      const currentLimits = weeklyBudget.category_limits || {};
+      const newLimits = { ...currentLimits, [catName]: Number(catAmount) };
+
+      const { data, error } = await supabase
+        .from('weekly_budgets')
+        .update({ category_limits: newLimits })
+        .eq('id', weeklyBudget.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setWeeklyBudget(data);
+      addNotification(`Limit of ${currency}${catAmount} set for "${catName}"!`, 'success');
+      
+      setCatCategory('');
+      setCatAmount('');
+    } catch (err) {
+      console.error(err);
+      addNotification('Error updating category limit.', 'error');
+    } finally {
+      setCatLoading(false);
+    }
+  };
+
+  const removeCategoryLimit = async (catName) => {
+    if (!weeklyBudget || !weeklyBudget.category_limits) return;
+    
+    try {
+      const newLimits = { ...weeklyBudget.category_limits };
+      delete newLimits[catName];
+
+      const { data, error } = await supabase
+        .from('weekly_budgets')
+        .update({ category_limits: newLimits })
+        .eq('id', weeklyBudget.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      setWeeklyBudget(data);
+      addNotification(`Removed limit for "${catName}".`, 'info');
+    } catch (err) {
+      console.error(err);
+      addNotification('Error removing category limit.', 'error');
     }
   };
 
@@ -201,12 +275,92 @@ export default function Budget() {
           </form>
         </div>
 
-        {/* Right: History Log */}
-        <div className="lg:col-span-7 space-y-4">
-          <div className="flex items-center gap-2 border-b-2 border-secondary pb-2">
-            <History size={18} className="text-primary" />
-            <h3 className="text-lg font-bold text-secondary font-sans">Historical Budgets Log</h3>
-          </div>
+        {/* Right: History Log & Category Budgets */}
+        <div className="lg:col-span-7 space-y-6">
+          
+          {/* CATEGORY BUDGETS */}
+          {weeklyBudget && (
+            <div className="doodle-card p-6 border-primary">
+              <div className="flex items-center gap-2 border-b-2 border-secondary pb-2 mb-4">
+                <PieChart size={18} className="text-primary" />
+                <h3 className="text-lg font-bold text-secondary font-sans">Category Spending Limits</h3>
+              </div>
+              
+              <form onSubmit={handleCategoryBudgetSubmit} className="flex flex-col sm:flex-row gap-3 mb-6 items-start sm:items-end">
+                <div className="flex-1 w-full">
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Category (e.g. food, rent)</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-secondary">
+                      <Tag size={14} />
+                    </div>
+                    <input
+                      type="text"
+                      value={catCategory}
+                      onChange={(e) => { setCatCategory(e.target.value); setCatError(''); }}
+                      placeholder="e.g. food"
+                      className="doodle-input pl-8 w-full text-sm font-bold shadow-[1.5px_1.5px_0px_var(--secondary)] py-2"
+                    />
+                  </div>
+                </div>
+                <div className="w-full sm:w-32">
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Limit</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-secondary text-xs">
+                      {currency}
+                    </div>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={catAmount}
+                      onChange={(e) => { setCatAmount(e.target.value); setCatError(''); }}
+                      placeholder="100"
+                      className="doodle-input pl-6 w-full text-sm font-bold shadow-[1.5px_1.5px_0px_var(--secondary)] py-2"
+                    />
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  disabled={catLoading}
+                  className="doodle-btn py-2 px-4 text-xs font-bold w-full sm:w-auto h-[38px]"
+                >
+                  {catLoading ? '...' : 'Add Limit'}
+                </button>
+              </form>
+              
+              {catError && <p className="text-danger text-xs font-bold mb-4">{catError}</p>}
+
+              <div className="space-y-3 font-mono">
+                {!weeklyBudget.category_limits || Object.keys(weeklyBudget.category_limits).length === 0 ? (
+                  <p className="text-xs text-slate-500 italic">No specific category limits set for this week.</p>
+                ) : (
+                  Object.entries(weeklyBudget.category_limits).map(([cat, limit]) => (
+                    <div key={cat} className="flex items-center justify-between bg-slate-50 border-2 border-secondary p-3 rounded-xl shadow-[1.5px_1.5px_0px_var(--secondary)]">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-primary border border-secondary" />
+                        <span className="text-sm font-bold text-slate-800 capitalize">{cat}</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm font-bold text-secondary">{currency}{Number(limit).toFixed(2)}</span>
+                        <button 
+                          onClick={() => removeCategoryLimit(cat)}
+                          className="text-xs text-danger hover:underline hover:text-red-700 font-bold"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* HISTORY LOG */}
+          <div className="doodle-card p-6">
+            <div className="flex items-center gap-2 border-b-2 border-secondary pb-2 mb-4">
+              <History size={18} className="text-primary" />
+              <h3 className="text-lg font-bold text-secondary font-sans">Historical Budgets Log</h3>
+            </div>
 
           {loadingHistory ? (
             <div className="flex flex-col items-center justify-center p-8 gap-2">
@@ -258,6 +412,7 @@ export default function Budget() {
               })}
             </div>
           )}
+        </div>
         </div>
       </div>
     </div>

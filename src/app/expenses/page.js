@@ -142,8 +142,6 @@ export default function Expenses() {
           .eq('id', editingId);
 
         if (error) throw error;
-        addNotification('Expense updated successfully!', 'success');
-        setEditingId(null);
       } else {
         // Insert
         const { error } = await supabase
@@ -151,8 +149,35 @@ export default function Expenses() {
           .insert([expenseData]);
 
         if (error) throw error;
-        addNotification('Expense logged successfully!', 'success');
       }
+
+      let customMessage = editingId ? 'Expense updated successfully!' : 'Expense logged successfully!';
+        let messageType = 'success';
+
+        // Check against category budgets
+        if (weeklyBudget && weeklyBudget.category_limits) {
+          const limit = weeklyBudget.category_limits[category];
+          if (limit) {
+            // Only alert if the expense falls in the current week
+            if (expenseDate >= currentWeekStartStr) {
+              const prevTotal = thisWeeksExpenses
+                .filter(e => e.category === category && e.id !== editingId)
+                .reduce((sum, item) => sum + Number(item.amount), 0);
+              const newTotal = prevTotal + Number(amount);
+
+              if (newTotal > limit) {
+                customMessage = `Expense logged, but WARNING: You are ${currency}${(newTotal - limit).toFixed(2)} OVER your ${category} budget!`;
+                messageType = 'error';
+              } else if (newTotal >= limit * 0.85) {
+                customMessage = `Expense logged! Careful, you've used ${((newTotal/limit)*100).toFixed(0)}% of your ${category} budget.`;
+                messageType = 'warning';
+              }
+            }
+          }
+        }
+
+        addNotification(customMessage, messageType);
+        if (editingId) setEditingId(null);
 
       // Reset
       setAmount('');

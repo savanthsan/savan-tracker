@@ -17,7 +17,11 @@ export default function Login() {
   const [error, setError] = useState(null);
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const [isEnvConfigured, setIsEnvConfigured] = useState(true);
+  const [isEnvConfigured, setIsEnvConfigured] = useState(() => {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    return !!(url && key && !url.includes('placeholder-url'));
+  });
 
   const validateEmail = (val) => {
     if (!val) {
@@ -49,14 +53,7 @@ export default function Login() {
     }
   }, [user, router]);
 
-  // Check if Supabase keys are configured in local environment
-  useEffect(() => {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    if (!url || !key || url.includes('placeholder-url')) {
-      setIsEnvConfigured(false);
-    }
-  }, []);
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -231,7 +228,7 @@ export default function Login() {
 
           <div className="mt-6 text-center border-t-2 border-slate-150 pt-6">
             <p className="text-sm text-slate-655 font-mono">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <Link href="/signup" className="text-primary hover:text-primary-hover font-bold transition-colors underline">
                 Sign up for free
               </Link>

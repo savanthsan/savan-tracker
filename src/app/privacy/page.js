@@ -28,7 +28,7 @@ export default function PrivacyPolicy() {
             <section>
               <h2 className="text-xl font-bold text-secondary mb-3">1. Introduction</h2>
               <p>
-                Welcome to Savan Tracker ("we", "our", or "us"). We respect your privacy and are committed to protecting your personal data. This Privacy Policy will inform you about how we look after your personal data when you visit our website and tell you about your privacy rights and how the law protects you.
+                Welcome to Savan Tracker (&ldquo;we&rdquo;, &ldquo;our&rdquo;, or &ldquo;us&rdquo;). We respect your privacy and are committed to protecting your personal data. This Privacy Policy will inform you about how we look after your personal data when you visit our website and tell you about your privacy rights and how the law protects you.
               </p>
             </section>
 

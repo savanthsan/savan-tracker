@@ -28,7 +28,7 @@ export default function TermsOfService() {
             <section>
               <h2 className="text-xl font-bold text-secondary mb-3">1. Acceptance of Terms</h2>
               <p>
-                By accessing and using Savan Tracker ("Service"), you accept and agree to be bound by the terms and provision of this agreement. In addition, when using these particular services, you shall be subject to any posted guidelines or rules applicable to such services.
+                By accessing and using Savan Tracker (&ldquo;Service&rdquo;), you accept and agree to be bound by the terms and provision of this agreement. In addition, when using these particular services, you shall be subject to any posted guidelines or rules applicable to such services.
               </p>
             </section>
 
@@ -49,7 +49,7 @@ export default function TermsOfService() {
             <section>
               <h2 className="text-xl font-bold text-secondary mb-3">4. Disclaimer of Warranties</h2>
               <p className="p-4 bg-amber-50 border border-secondary rounded font-mono text-sm shadow-[2px_2px_0px_var(--secondary)]">
-                The Service is provided "as is". We and our suppliers and licensors hereby disclaim all warranties of any kind, express or implied, including, without limitation, the warranties of merchantability, fitness for a particular purpose and non-infringement. We do not make any warranty that the Service will be error free or that access thereto will be continuous or uninterrupted.
+                The Service is provided &ldquo;as is&rdquo;. We and our suppliers and licensors hereby disclaim all warranties of any kind, express or implied, including, without limitation, the warranties of merchantability, fitness for a particular purpose and non-infringement. We do not make any warranty that the Service will be error free or that access thereto will be continuous or uninterrupted.
               </p>
             </section>
 

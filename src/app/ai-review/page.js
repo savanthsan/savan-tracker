@@ -55,19 +55,6 @@ export default function AIReview() {
     }
   };
 
-  useEffect(() => {
-    if (user) {
-      loadExistingReview();
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (!fetchingDB && !review && user && !loading && !hasAttempted) {
-      setHasAttempted(true);
-      generateAIReview();
-    }
-  }, [fetchingDB, review, user, loading, hasAttempted]);
-
   const generateAIReview = async () => {
     setLoadingReview(true);
     try {
@@ -113,6 +100,19 @@ export default function AIReview() {
       setLoadingReview(false);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      loadExistingReview();
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (!fetchingDB && !review && user && !loading && !hasAttempted) {
+      setHasAttempted(true);
+      generateAIReview();
+    }
+  }, [fetchingDB, review, user, loading, hasAttempted]);
 
   if (loading || !user) {
     return (
@@ -237,7 +237,7 @@ export default function AIReview() {
                 <div className="p-2 rounded-lg bg-amber-50 border-2 border-secondary shadow-[1.5px_1.5px_0px_var(--secondary)] text-warning">
                   <Lightbulb size={18} />
                 </div>
-                <span className="font-bold text-sm font-sans text-warning">Savan's Advice</span>
+                <span className="font-bold text-sm font-sans text-warning">Savan&apos;s Advice</span>
               </div>
               <p className="text-slate-800 text-sm leading-relaxed whitespace-pre-line">
                 {review.warnings_and_advice}

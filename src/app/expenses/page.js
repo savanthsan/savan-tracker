@@ -38,7 +38,9 @@ export default function Expenses() {
   const [category, setCategory] = useState('food');
   const [customCategory, setCustomCategory] = useState('');
   const [note, setNote] = useState('');
-  const [expenseDate, setExpenseDate] = useState('');
+  const [expenseDate, setExpenseDate] = useState(() => {
+    return new Date().toISOString().split('T')[0];
+  });
   
   // Validation Error States
   const [amountError, setAmountError] = useState('');
@@ -48,11 +50,7 @@ export default function Expenses() {
   const [editingId, setEditingId] = useState(null);
   const [formLoading, setFormLoading] = useState(false);
 
-  // Set default date to today
-  useEffect(() => {
-    const today = new Date().toISOString().split('T')[0];
-    setExpenseDate(today);
-  }, []);
+
 
   const categories = [
     { id: 'food', name: 'Food & Drinks', color: 'bg-orange-105 text-orange-700 border-orange-350', fill: '#f97316' },

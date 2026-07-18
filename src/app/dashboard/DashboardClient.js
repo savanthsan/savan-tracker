@@ -231,7 +231,7 @@ export default function DashboardClient({ initialAiSnippet }) {
             <div className="flex items-center justify-between mb-4 pb-3 border-b-2 border-secondary">
               <div className="flex items-center gap-2 text-secondary font-bold text-base font-sans">
                 <Calendar size={18} className="text-primary" />
-                <span>Today's Task Checklist</span>
+                <span>Today&apos;s Task Checklist</span>
               </div>
               <Link href="/tasks" className="text-xs text-slate-700 hover:text-secondary font-bold font-mono flex items-center gap-1 underline">
                 <span>View Planner</span>
@@ -309,10 +309,10 @@ export default function DashboardClient({ initialAiSnippet }) {
                 <div className="p-4 bg-amber-50 border-2 border-secondary rounded-[15px_4px_12px_4px/4px_12px_4px_15px] shadow-[2px_3px_0px_var(--secondary)] space-y-2">
                   <div className="flex items-center gap-2 text-xs font-bold text-warning">
                     <Info size={14} className="text-warning" />
-                    <span>Savan's Focus Warning</span>
+                    <span>Savan&apos;s Focus Warning</span>
                   </div>
                   <p className="text-xs text-slate-850 leading-relaxed italic">
-                    "{aiSnippet.warnings_and_advice.slice(0, 180)}..."
+                    &ldquo;{aiSnippet.warnings_and_advice.slice(0, 180)}...&rdquo;
                   </p>
                 </div>
                 <div className="grid grid-cols-2 gap-4 text-xs">

@@ -27,7 +27,11 @@ export default function Signup() {
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [success, setSuccess] = useState(false);
-  const [isEnvConfigured, setIsEnvConfigured] = useState(true);
+  const [isEnvConfigured, setIsEnvConfigured] = useState(() => {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    return !!(url && key && !url.includes('placeholder-url'));
+  });
 
   const validateEmail = (val) => {
     if (!val) {
@@ -59,14 +63,7 @@ export default function Signup() {
     }
   }, [user, router]);
 
-  // Check if Supabase keys are configured in local environment
-  useEffect(() => {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    if (!url || !key || url.includes('placeholder-url')) {
-      setIsEnvConfigured(false);
-    }
-  }, []);
+
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -179,7 +176,7 @@ export default function Signup() {
               </div>
               <h3 className="text-xl font-bold text-secondary font-sans">Registration Successful!</h3>
               <p className="text-sm text-slate-700 leading-relaxed">
-                We've sent a verification email to <span className="font-bold text-secondary">{email}</span>. 
+                We&apos;ve sent a verification email to <span className="font-bold text-secondary">{email}</span>. 
                 Please click the activation link to complete your signup and log in.
               </p>
               <div className="pt-4">

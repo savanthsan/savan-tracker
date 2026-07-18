@@ -119,6 +119,48 @@ export default function MonthlyHub() {
     }
   };
 
+  const generateMonthlyAIReview = async () => {
+    setLoadingReview(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+
+      if (!token) {
+        throw new Error('User session expired. Please sign in again.');
+      }
+
+      const res = await fetch('/api/monthly-review', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          tasks,
+          expenses,
+          budgetAmount: monthlyBudgetLimit,
+          monthDate: monthStart,
+          currency
+        })
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to compile monthly audit.');
+      }
+
+      const data = await res.json();
+      setMonthlyReview(data);
+      addNotification(`Monthly audit generated for ${monthName}!`, 'success');
+
+    } catch (err) {
+      console.error(err);
+      addNotification(err.message || 'Error communicating with AI Auditor.', 'error');
+    } finally {
+      setLoadingReview(false);
+    }
+  };
+
   useEffect(() => {
     if (user) {
       loadExistingReview();
@@ -213,48 +255,6 @@ export default function MonthlyHub() {
     setMonthlyCategoryLimits(newLimits);
     localStorage.setItem('savan_monthly_category_limits', JSON.stringify(newLimits));
     addNotification(`Removed limit for "${catName}".`, 'info');
-  };
-
-  const generateMonthlyAIReview = async () => {
-    setLoadingReview(true);
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const token = session?.access_token;
-
-      if (!token) {
-        throw new Error('User session expired. Please sign in again.');
-      }
-
-      const res = await fetch('/api/monthly-review', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          tasks,
-          expenses,
-          budgetAmount: monthlyBudgetLimit,
-          monthDate: monthStart,
-          currency
-        })
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || 'Failed to compile monthly audit.');
-      }
-
-      const data = await res.json();
-      setMonthlyReview(data);
-      addNotification(`Monthly audit generated for ${monthName}!`, 'success');
-
-    } catch (err) {
-      console.error(err);
-      addNotification(err.message || 'Error communicating with AI Auditor.', 'error');
-    } finally {
-      setLoadingReview(false);
-    }
   };
 
   if (loading || !user) {
@@ -552,7 +552,7 @@ export default function MonthlyHub() {
       <div className="border-t-2 border-secondary pt-8">
         <div className="flex items-center gap-2 mb-6">
           <Sparkles size={20} className="text-secondary animate-pulse" />
-          <h3 className="text-xl font-bold text-secondary font-sans">Savan's Monthly Performance Review</h3>
+          <h3 className="text-xl font-bold text-secondary font-sans">Savan&apos;s Monthly Performance Review</h3>
         </div>
 
         {fetchingDB ? (

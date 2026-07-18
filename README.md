@@ -2,7 +2,7 @@
 
 A personal finance and task management dashboard built with Next.js, Supabase, and powered by Gemini AI.
 
-**🌐 Live Demo:** [https://spiffy-cocada-82359b.netlify.app/](https://spiffy-cocada-82359b.netlify.app/)
+**🌐 Live Demo:** [https://savan-tracker-1.onrender.com/)
 
 ## Features
 
